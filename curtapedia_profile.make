@@ -154,6 +154,9 @@ projects[autosave][subdir] = "contrib"
 projects[globalredirect][version] = "1"
 projects[globalredirect][subdir] = "contrib"
 
+projects[libraries][version] = "2"
+projects[libraries][subdir] = "contrib"
+
 projects[pathauto][version] = "2"
 projects[pathauto][subdir] = "contrib"
 
