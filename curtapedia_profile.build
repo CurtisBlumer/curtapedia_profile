@@ -1,0 +1,11 @@
+core = 7.x
+api = 2
+
+; Download most recent Drupal core
+projects[] = "drupal"
+
+; Download installation profile for GitHub
+projects[curtapedia_profile][type] = profile
+projects[curtapedia_profile][download][type] = git
+projects[curtapedia_profile][download][url] = https://github.com/cblumer88/curtapedia_profile.git
+projects[curtapedia_profile][download][branch] = 7.x-1.x

@@ -1,0 +1,11 @@
+name = Curtapedia Profile
+description = Installs a number of modules included in Drupal 8, as well as modules required for effective site management.
+core = 7.x
+version = 1.x-dev
+
+dependencies[] = contextual
+dependencies[] = menu
+dependencies[] = navbar
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = taxonomy

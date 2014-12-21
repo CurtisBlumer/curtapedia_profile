@@ -1,4 +1,4 @@
 curtapedia_profile
 ==================
 
-Drupal 7 installation profile for Curtapedia.com and other sites built by Curtis Blumer
+Installs a number of modules included in Drupal 8, as well as modules required for effective site management.
