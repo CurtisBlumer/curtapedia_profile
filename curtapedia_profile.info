@@ -3,10 +3,20 @@ description = Installs a number of modules included in Drupal 8, as well as modu
 core = 7.x
 version = 1.x-dev
 
+; Core dependencies
+dependencies[] = block
+dependencies[] = comment
 dependencies[] = contextual
-dependencies[] = libraries
+dependencies[] = dblog
+dependencies[] = locale
 dependencies[] = menu
-dependencies[] = navbar
+dependencies[] = path
 dependencies[] = search
 dependencies[] = shortcut
 dependencies[] = taxonomy
+
+; Contrib dependenices
+dependencies[] = libraries
+dependencies[] = navbar
+
+; Custom dependencies
