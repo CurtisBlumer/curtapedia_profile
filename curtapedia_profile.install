@@ -22,11 +22,13 @@ function curtapedia_profile_install() {
         }
     }
 
-    // Unset variables used. This is not strictly necessary, but good practice. 
-    unset($enable_theme, $system_variable, $enabled_theme);
-
     // Disable the Drupal 7 default theme, Bartik.
     theme_disable(array('bartik'));
+
+    // Unset variables used. This is not strictly necessary, but good practice.
+    // Unsetting variables also allows developers to know when each portion of
+    // the function ends. 
+    unset($enable_theme, $system_variable, $enabled_theme);
 
     // Create a default role for site builders. In Drupal this is called the 
     // Administrator Role, but that is a bit of a misnomer given the average 
@@ -52,16 +54,29 @@ function curtapedia_profile_install() {
     // Unset variable used for this portion of the function.
     unset($builder_role);
 
-    // Create a Home link in the main menu.
-    $menu_link = array(
-        'link_title' => st('Home'),
-        'link_path' => '<front>',
-        'menu_name' => 'main-menu',
+    $menu_links = array(
+        // Create a Home link in the main menu.
+        array(
+            'link_title' => st('Home'),
+            'link_path' => '<front>',
+            'menu_name' => 'main-menu',
+        ),
+        array(
+            'link_title' => st('Test'),
+            'link_path' => '<front>',
+            'menu_name' => 'main-menu',
+        ),
     );
-    menu_link_save($menu_link);
+
+    foreach($menu_links as $menu_link) {
+        menu_link_save($menu_link);
+    }
 
     // Update the menu router information.
     menu_rebuild();
+
+    // Unset variable used for this portion of the function.
+    unset($menu_links, $menu_link);
 }
 
 

@@ -3,7 +3,7 @@ core = 7.x
 
 ;;; Download Drupal and the Responsive Bartik theme ;;;
 
-projects[] = "drupal"
+;projects[] = "drupal"
 projects[responsive_bartik][version] = "1"
 
 ;;; Contributed modules ;;;
