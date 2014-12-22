@@ -42,8 +42,9 @@ function _curtapedia_profile_default_password_policy_settings_combine(array $set
     $settings = array_merge($settings, _curtapedia_profile_default_password_policy_settings_policy_common());
     drupal_set_message(t('@function function run. Arrays merged.', array('@function' => __FUNCTION__)), 'notice');
     return($settings);
+}
 
-    // Define settings array for 'Default' policy
+// Define settings array for 'Default' policy
 function _curtapedia_profile_default_password_policy_settings_policy_default() {
     $settings = array();
     $settings['char_count']['char_count'] = '6'; // Minimum number of characters
@@ -56,6 +57,7 @@ function _curtapedia_profile_default_password_policy_settings_policy_default() {
     return($settings);
 }
 
+// Define settings array for 'Elevated' policy
 function _curtapedia_profile_default_password_policy_settings_policy_elevated() {
     // Declare variable as array
     $settings = array();
@@ -69,5 +71,4 @@ function _curtapedia_profile_default_password_policy_settings_policy_elevated() 
     $settings = _curtapedia_profile_default_password_policy_settings_combine($settings);
     drupal_set_message(t('@function function run. Elevated policy settings array created.', array('@function' => __FUNCTION__)), 'notice');
     return($settings);
-}
 }
