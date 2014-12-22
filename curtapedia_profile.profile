@@ -27,8 +27,12 @@ function curtapedia_profile_ctools_plugin_api($module, $api) {
 }
 
 function curtapedia_profile_install_tasks($install_state) {
-    if(module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.password_policy') == FALSE) {
-        drupal_set_message(t('File "curtapedia_profile/includes/curtapedia_profile.password_policy.inc" not found'), 'error', TRUE);
+    $include_files = array();
+    $include_files['password_profile'] = 'includes/curtapedia_profile.password_policy.inc';
+    if(file_exists($include_files['password_profile']) == FALSE) {
+        drupal_set_message(t('File "%s" not found', $include_files['password_profile']), 'error', TRUE);
+    } else {
+        require_once($include_files['password_profile']);
     }
     if(function_exists(curtapedia_profile_default_password_policy_alter)) {
     $tasks['default_password_policy'] = array(
