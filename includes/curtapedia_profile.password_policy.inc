@@ -1,6 +1,3 @@
-<?php
-
-function curtapedia_profile_default_password_policy_alter(&$policies) {
     // Create an 'Default' password policy for all roles.
     $config = array(
         'alpha_count' => array(
@@ -93,4 +90,3 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $policies['elevated'] = $password_policy;
 
     unset($config, $password_policy, $policies);
-}
