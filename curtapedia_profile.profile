@@ -26,25 +26,35 @@ function curtapedia_profile_ctools_plugin_api($module, $api) {
     }
 }
 
-function _curtapedia_profile_set_file_require_error($filename) {
+function _curtapedia_profile_no_file_exists($filename) {
     drupal_set_message(t('File "@filename" not found', array('@filename' => $filename)), 'error', TRUE);
+}
+
+function _curtapedia_profile_no_function_exists($function) {
+    drupal_set_message(t('Function "@function" not found', array('@function' => $function)), 'error', TRUE);
+    exit();
 }
 
 function curtapedia_profile_install_tasks($install_state) {
     $include_files = array();
     $include_files['password_profile'] = __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
-    //$include_files['password_profile_dr'] = DRUPAL_ROOT . '/' . __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
     foreach($include_files as $file) {
-        $file_exists = (file_exists($file)) ? require_once($file) : _curtapedia_profile_set_file_require_error($file);
-    }    
+        $file_exists = (file_exists($file)) ? require_once($file) : _curtapedia_profile_no_file_exists($file);
+    }
 
-    if(function_exists('curtapedia_profile_default_password_policy_alter')) {
+    // test functions
+    $functions['hook_default_password_policy_alter'] = 'curtapedia_profile_default_password_policy_alter';
+    foreach($functions as $function) {
+        if(!function_exists($function)) {
+            _curtapedia_profile_no_function_exists($function);
+        }
+    }
+
     $tasks['default_password_policy'] = array(
         'display_name' => st('Adding default Password Policies'),
         'type' => 'normal',
         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
         'function' => 'curtapedia_profile_default_password_policy_alter'
     );
-    } else { drupal_set_message(t('Function "curtapedia_profile_default_password_policy_alter" does not exists'), 'error', TRUE); }
-    //return $tasks;
+    return $tasks;
 }
