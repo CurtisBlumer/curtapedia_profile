@@ -15,8 +15,13 @@ dependencies[] = search
 dependencies[] = shortcut
 dependencies[] = taxonomy
 
+; "Drupal 8" dependencies
+dependencies[] = filter_perms
+dependencies[] = module_filter
+dependencies[] = navbar
+
 ; Contrib dependenices
 dependencies[] = libraries
-dependencies[] = navbar
+dependencies[] = password_policy
 
 ; Custom dependencies
