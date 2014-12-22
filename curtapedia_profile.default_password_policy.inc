@@ -1,6 +1,7 @@
 <?php
 
 function curtapedia_profile_default_password_policy_alter(&$policies) {
+    // Create an Array with settings common to all policies.    
     $settings_common = array();
     $settings_common['alpha_count'] = array('alpha_count' => '1');
     $settings_common['consecutive'] = array('consecutive_char_count' => '3');
@@ -14,7 +15,7 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $settings_common['int_count'] = array('int_count' => '1');
     $settings_common['username'] = array('username' => TRUE);
 
-    // Create an 'Default' password policy for all roles.    
+    // Settings unique to 'Default' policy.
     $settings = array(
         'char_count' => array(
             'char_count' => '6',
@@ -27,12 +28,15 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
         ),
         'role' => array(
             'roles' => array(
-                '2' => TRUE,
+                '2' => TRUE, // Drupal default "authenticated user" role
             ),
         ),
     );
+
+    // Merge common and unique settings.
     $settings = array_merge($settings_common, $settings);
 
+    // Create 'Default' password policy.    
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
@@ -40,9 +44,10 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($settings);
     $policies['Default'] = $password_policy;
 
+    // Unset variables to be used again. Not strictly necessary.
     unset($settings, $password_policy);
 
-    // Create an 'Elevated' password policy for 'Site architect' role.
+    // Settings unique to 'Elevated'.
     $settings = array(
         'char_count' => array(
             'char_count' => '8',
@@ -52,7 +57,7 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
         ),
         'role' => array(
             'roles' => array(
-                '3' => TRUE,
+                '3' => TRUE, // Drupal 'Site architect' role created during install
             ),
         ),
         'symbol_count' => array(
@@ -60,8 +65,10 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
             'symbol_count_symbols' => '!@#$%^&*()_+=-|}{"?:><,./;\'\\[]',
         ),
     );
+    // Merge common and unique settings.
     $settings = array_merge($settings_common, $settings);
 
+    // Create 'Elevated' password policy. 
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
@@ -69,6 +76,6 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($settings);
     $policies['Elevated'] = $password_policy;
 
-    // Clean up variables
+    // Clean up used variables. Not strictly necessary.
     unset($settings, $settings_common, $password_policy);
 }
