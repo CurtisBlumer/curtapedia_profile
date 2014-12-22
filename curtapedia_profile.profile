@@ -15,6 +15,9 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
   $form['site_information']['site_mail']['#default_value'] = "do-not-reply@" . $_SERVER['SERVER_NAME'];
   $form['server_settings']['site_default_country']['#default_value'] = "US";
   $form['update_notifications']['update_status_module'][2]['#default_value'] = 0;
+    if($_SERVER['SERVER_NAME'] == 'dev.curtapedia.com') {
+        $form['admin_account']['account']['name']['#default_value'] = 'root';
+    }
 }
 
 /**
