@@ -23,15 +23,6 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
 }
 
 /**
- * Implements hook_ctools_plugin_directory().
- */
-function curtapedia_profile_ctools_plugin_directory($module, $plugin) {
-    if ($module == 'ctools' && !empty($plugin)) {
-        return "plugins/$plugin";
-    }
-}
-
-/**
  * Implements hook_ctools_plugin_api().
  */
 function curtapedia_profile_ctools_plugin_api($module, $api) {
