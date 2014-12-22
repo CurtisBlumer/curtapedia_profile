@@ -6,18 +6,18 @@ version = 1.x-dev
 ; Core dependencies
 ;dependencies[] = block
 ;dependencies[] = comment
-dependencies[] = contextual
-dependencies[] = dblog
+;dependencies[] = contextual
+;dependencies[] = dblog
 ;dependencies[] = locale
-dependencies[] = menu
-dependencies[] = path
-dependencies[] = search
+;dependencies[] = menu
+;dependencies[] = path
+;dependencies[] = search
 ;dependencies[] = shortcut
 ;dependencies[] = taxonomy
 
 ; "Drupal 8" dependencies
-dependencies[] = filter_perms
-dependencies[] = module_filter
+;dependencies[] = filter_perms
+;dependencies[] = module_filter
 dependencies[] = navbar
 
 ; Contrib dependenices
