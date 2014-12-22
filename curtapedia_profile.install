@@ -8,16 +8,16 @@
 function curtapedia_profile_install() {
     // Any themes without keys here will get numeric keys and so will be enabled,
     // but not placed into variables.
-    $enable_theme = array(
+    $themes = array(
         'theme_default' => 'responsive_bartik',
         'admin_theme' => 'seven',
         'maintenance_theme' => 'responsive_bartik',
     );
-    theme_enable($enable_theme);
+    theme_enable($themes);
 
     // Use theme keys to set system variables
-    foreach ($enable_theme as $system_variable => $enabled_theme) {
-        if (!is_numeric($system_variable)) {
+    foreach ($themes as $system_variable => $enabled_theme) {
+        if (is_string($system_variable)) {
             variable_set($system_variable, $enabled_theme);
         }
     }
@@ -36,7 +36,7 @@ function curtapedia_profile_install() {
     // settings.
     $builder_role = new stdClass();
     $builder_role->name = 'Site architect';
-    $builder_role->weight = 2;
+    $builder_role->weight = 50;
     user_role_save($builder_role);
     user_role_grant_permissions($builder_role->rid, array_keys(module_invoke_all('permission')));
 
