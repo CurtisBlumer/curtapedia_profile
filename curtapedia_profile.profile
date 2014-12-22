@@ -40,7 +40,7 @@ function _curtapedia_profile_no_function_exists($function) {
     exit();
 }
 
-function curtapedia_profile_install_tasks($install_state) {
+/*function curtapedia_profile_install_tasks($install_state) {
     $include_files = array();
     $include_files['password_profile'] = __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
     foreach($include_files as $file) {
@@ -62,4 +62,4 @@ function curtapedia_profile_install_tasks($install_state) {
         'function' => 'curtapedia_profile_default_password_policy_alter'
     );
     return $tasks;
-}
+}*/
