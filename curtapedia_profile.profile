@@ -30,7 +30,7 @@ function curtapedia_profile_install_tasks($install_state) {
     $include_files = array();
     $include_files['password_profile'] = 'includes/curtapedia_profile.password_policy.inc';
     if(file_exists($include_files['password_profile']) == FALSE) {
-        drupal_set_message(t('File "%s" not found', $include_files['password_profile']), 'error', TRUE);
+        drupal_set_message(t('File "%s" not found', array($include_files['password_profile'])), 'error', TRUE);
     } else {
         require_once($include_files['password_profile']);
     }
