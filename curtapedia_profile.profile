@@ -25,3 +25,15 @@ function curtapedia_profile_ctools_plugin_api($module, $api) {
         return array("version" => "1");
     }
 }
+
+function curtapedia_install_tasks() {
+    module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.password_policy');
+    if(function_exists(curtapedia_profile_default_password_policy_alter)) {
+    $task['default_password_policy'] = array(
+        'display_name' => st('Adding default Password Policies'),
+        'type' => 'normal',
+        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+        'function' => curtapedia_profile_default_password_policy_alter
+    );
+    }
+}

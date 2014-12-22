@@ -77,9 +77,7 @@ function curtapedia_profile_install() {
 
     // Unset variable used for this portion of the function.
     unset($menu_links, $menu_link);
-    module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.default_password_policy');
 }
-
 
 /**
  * @file
