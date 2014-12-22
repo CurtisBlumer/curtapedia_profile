@@ -43,7 +43,7 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->name = 'Default';
     $password_policy->config = serialize($config);
     $policies['Default'] = $password_policy;
-    drupal_set_message(t('Added Default password policy'), 'notice');
+
     // Create an 'Elevated' password policy for 'Site architect' role.
     $config = array(
         'alpha_count' => array(
@@ -91,7 +91,6 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($config);
     $policies['elevated'] = $password_policy;
 
-    drupal_set_message(t('Added Elevated password policy'), 'notice');
-
-    //unset($config, $password_policy, $policies);
+    // Clean up variables
+    unset($config, $password_policy, $policies);
 }
