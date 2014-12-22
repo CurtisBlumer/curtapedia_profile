@@ -25,7 +25,7 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
 /**
  * Implements hook_ctools_plugin_directory().
  */
-function flag_ctools_plugin_directory($module, $plugin) {
+function curtapedia_profile_ctools_plugin_directory($module, $plugin) {
     if ($module == 'ctools' && !empty($plugin)) {
         return "plugins/$plugin";
     }
