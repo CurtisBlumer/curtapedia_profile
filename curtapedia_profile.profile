@@ -33,7 +33,7 @@ function _curtapedia_profile_set_file_require_error($filename) {
 function curtapedia_profile_install_tasks($install_state) {
     $include_files = array();
     $include_files['password_profile'] = __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
-    $include_files['password_profile_dr'] = DRUPAL_ROOT . '/' . __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
+    //$include_files['password_profile_dr'] = DRUPAL_ROOT . '/' . __DIR__ . '/includes/curtapedia_profile.password_policy.inc';
     foreach($include_files as $file) {
         $file_exists = (file_exists($file)) ? require_once($file) : _curtapedia_profile_set_file_require_error($file);
     }    
