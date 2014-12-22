@@ -7,7 +7,7 @@ projects[] = "drupal"
 ; Download installation profile locally
 projects[curtapedia_profile][type] = "profile"
 projects[curtapedia_profile][download][type] = "git"
-projects[curtapedia_profile][download][url] = "file:///home/cblumer/Development/curtapedia_profile/curtapedia_profile.git"
+projects[curtapedia_profile][download][url] = "file:///home/cblumer/Development/curtapedia_profile/.git"
 projects[curtapedia_profile][download][branch] = "master"
 
 ; Download installation profile for GitHub
