@@ -1,28 +1,26 @@
 <?php
 
 function curtapedia_profile_default_password_policy_alter(&$policies) {
-    // Create an 'Default' password policy for all roles.
-    $config = array(
-        'alpha_count' => array(
-            'alpha_count' => '1',
-        ),
+    $settings_common = array();
+    $settings_common['alpha_count'] = array('alpha_count' => '1');
+    $settings_common['consecutive'] = array('consecutive_char_count' => '3');
+    $settings_common['delay'] = array('delay' => '1 day');
+    $settings_common['expire'] = array(
+        'expire_limit' => '2 years',
+        'expire_warning_email_sent' => '-2 weeks, -1 week, -3 days, -1 day, -3 hours',
+        'expire_warning_email_message' => 'This is a warning message',
+        'expire_warning_email_subject' => '[user:name] you password on [site:name] shall expire in [password_expiration_date:interval] ',
+    );
+    $settings_common['int_count'] = array('int_count' => '1');
+    $settings_common['username'] = array('username' => TRUE);
+
+    // Create an 'Default' password policy for all roles.    
+    $settings = array(
         'char_count' => array(
             'char_count' => '6',
         ),
         'consecutive' => array(
             'consecutive_char_count' => '3',
-        ),
-        'delay' => array(
-            'delay' => '1 day',
-        ),
-        'expire' => array(
-            'expire_limit' => '2 years',
-            'expire_warning_email_sent' => '-2 weeks, -1 week, -3 days, -1 day, -3 hours',
-            'expire_warning_email_message' => 'This is a warning message',
-            'expire_warning_email_subject' => '[user:name] you password on [site:name] shall expire in [password_expiration_date:interval] ',
-        ),
-        'int_count' => array(
-            'int_count' => '1',
         ),
         'past_passwords' => array(
             'past_passwords' => '1',
@@ -32,40 +30,22 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
                 '2' => TRUE,
             ),
         ),
-        'username' => array(
-            'username' => TRUE,
-        ),
     );
+    $settings = array_merge($settings_common, $settings);
 
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
     $password_policy->name = 'Default';
-    $password_policy->config = serialize($config);
+    $password_policy->config = serialize($settings);
     $policies['Default'] = $password_policy;
 
+    unset($settings, $password_policy);
+
     // Create an 'Elevated' password policy for 'Site architect' role.
-    $config = array(
-        'alpha_count' => array(
-            'alpha_count' => '1',
-        ),
+    $settings = array(
         'char_count' => array(
             'char_count' => '8',
-        ),
-        'consecutive' => array(
-            'consecutive_char_count' => '3',
-        ),
-        'delay' => array(
-            'delay' => '3 days',
-        ),
-        'expire' => array(
-            'expire_limit' => '2 years',
-            'expire_warning_email_sent' => '-2 weeks, -1 week, -3 days, -1 day, -3 hours',
-            'expire_warning_email_message' => 'This is a warning message',
-            'expire_warning_email_subject' => '[user:name] you password on [site:name] shall expire in [password_expiration_date:interval] ',
-        ),
-        'int_count' => array(
-            'int_count' => '1',
         ),
         'past_passwords' => array(
             'past_passwords' => '2',
@@ -79,18 +59,16 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
             'symbol_count' => '1',
             'symbol_count_symbols' => '!@#$%^&*()_+=-|}{"?:><,./;\'\\[]',
         ),
-        'username' => array(
-            'username' => TRUE,
-        ),
     );
+    $settings = array_merge($settings_common, $settings);
 
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
     $password_policy->name = 'Elevated';
-    $password_policy->config = serialize($config);
-    $policies['elevated'] = $password_policy;
+    $password_policy->config = serialize($settings);
+    $policies['Elevated'] = $password_policy;
 
     // Clean up variables
-    unset($config, $password_policy, $policies);
+    unset($settings, $settings_common, $password_policy);
 }
