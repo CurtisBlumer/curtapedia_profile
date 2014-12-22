@@ -2,6 +2,7 @@ name = Curtapedia Profile
 description = Installs a number of modules included in Drupal 8, as well as modules required for effective site management.
 core = 7.x
 version = 1.x-dev
+exclusive = TRUE
 
 ; Core dependencies
 ;dependencies[] = block
@@ -16,8 +17,9 @@ version = 1.x-dev
 ;dependencies[] = taxonomy
 
 ; "Drupal 8" dependencies
-;dependencies[] = filter_perms
-;dependencies[] = module_filter
+dependencies[] = ckeditor
+dependencies[] = filter_perms
+dependencies[] = module_filter
 dependencies[] = navbar
 
 ; Contrib dependenices
