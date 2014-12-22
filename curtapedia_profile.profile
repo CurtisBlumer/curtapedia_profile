@@ -51,7 +51,7 @@ function curtapedia_profile_install_tasks($install_state) {
     }
 
     $tasks['default_password_policy'] = array(
-        'display_name' => st('Adding default Password Policies'),
+        'display_name' => st('Adding Password Policies'),
         'type' => 'normal',
         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
         'function' => 'curtapedia_profile_default_password_policy_alter'

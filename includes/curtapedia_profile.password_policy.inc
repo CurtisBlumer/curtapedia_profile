@@ -44,8 +44,6 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($config);
     $policies['Default'] = $password_policy;
 
-    unset($config, $password_policy, $policies);
-
     // Create an 'Elevated' password policy for 'Site architect' role.
     $config = array(
         'alpha_count' => array(
@@ -93,5 +91,5 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($config);
     $policies['elevated'] = $password_policy;
 
-    unset($config, $password_policy, $policies);
+    //unset($config, $password_policy, $policies);
 }
