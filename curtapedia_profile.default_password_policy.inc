@@ -11,7 +11,7 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $policies['Default'] = $password_policy;
 
     // Create 'Elevated' password policy
-    $settings = _curtapedia_profile_default_password_policy_settings_policy_elevated()
+    $settings = _curtapedia_profile_default_password_policy_settings_policy_elevated();
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
