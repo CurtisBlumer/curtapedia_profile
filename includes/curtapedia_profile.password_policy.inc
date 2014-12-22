@@ -78,8 +78,8 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
             ),
         ),
         'symbol_count' => array(
-            'symbol_count' => '1'
-            'symbol_count_symbols' => '!@#$%^&*()_+=-|}{"?:><,./;\'\\[]'
+            'symbol_count' => '1',
+            'symbol_count_symbols' => '!@#$%^&*()_+=-|}{"?:><,./;\'\\[]',
         'username' => array(
             'username' => TRUE,
         ),
