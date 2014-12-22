@@ -15,10 +15,19 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
   $form['site_information']['site_mail']['#default_value'] = 'do-not-reply@' . $_SERVER['SERVER_NAME'];
   $form['server_settings']['site_default_country']['#default_value'] = 'US';
   $form['update_notifications']['update_status_module'][2]['#default_value'] = 0;
-    if($_SERVER['SERVER_NAME'] == 'dev.curtapedia.com') {
+    if ($_SERVER['SERVER_NAME'] == 'dev.curtapedia.com') {
         //drupal_set_message(t('You are on Curtapedia-Dev'), 'notice');
         $form['admin_account']['account']['name']['#default_value'] = 'root';
         $form['admin_account']['account']['mail']['#default_value'] = 'do-not-reply@' . $_SERVER['SERVER_NAME'];
+    }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function flag_ctools_plugin_directory($module, $plugin) {
+    if ($module == 'ctools' && !empty($plugin)) {
+        return "plugins/$plugin";
     }
 }
 
