@@ -40,7 +40,7 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy = new stdClass();
     $password_policy->disabled = FALSE;
     $password_policy->api_version = 1;
-    $password_policy->name = 'default';
+    $password_policy->name = 'Default';
     $password_policy->config = serialize($config);
     $policies['Default'] = $password_policy;
 
