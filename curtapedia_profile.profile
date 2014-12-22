@@ -20,7 +20,7 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
 /**
  * Implements hook_ctools_plugin_api().
  */
-function password_policy_ctools_plugin_api($module, $api) {
+function curtapedia_profile_ctools_plugin_api($module, $api) {
   if ($module == "password_policy" && $api == "default_password_policy") {
     return array("version" => "1");
   }
