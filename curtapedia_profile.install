@@ -61,11 +61,11 @@ function curtapedia_profile_install() {
             'link_path' => '<front>',
             'menu_name' => 'main-menu',
         ),
-        array(
+        /*array(
             'link_title' => st('Test'),
             'link_path' => '<front>',
             'menu_name' => 'main-menu',
-        ),
+        ),*/
     );
 
     foreach($menu_links as $menu_link) {
@@ -77,6 +77,7 @@ function curtapedia_profile_install() {
 
     // Unset variable used for this portion of the function.
     unset($menu_links, $menu_link);
+    module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.default_password_policy');
 }
 
 

@@ -25,7 +25,3 @@ function curtapedia_profile_ctools_plugin_api($module, $api) {
         return array("version" => "1");
     }
 }
-
-function curtapedia_profile_default_password_policy_alter(&$policies) {
-    module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.default_password_policy');
-}
