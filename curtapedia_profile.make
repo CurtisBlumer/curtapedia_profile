@@ -256,6 +256,9 @@ projects[logintoboggan][subdir] = "contrib"
 projects[navbar][version] = "1"
 projects[navbar][subdir] = "contrib"
 
+projects[password_tab][version] = "1"
+projects[password_tab][subdir] = "contrib"
+
 projects[quickedit][version] = "1"
 projects[quickedit][subdir] = "contrib"
 
