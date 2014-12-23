@@ -10,7 +10,7 @@ function _curtapedia_profile_default_password_policy_settings_policy_default() {
     $settings['role']['roles']['3'] = '0'; // No 'Site architect' role (created during install)
     $settings = _curtapedia_profile_default_password_policy_settings_combine($settings);
     //drupal_set_message(t('@function function run. Default policy settings array created.', array('@function' => __FUNCTION__)), 'notice');
-    return($settings);
+    return $settings;
 }
 
 // Define settings array for 'Elevated' policy
@@ -26,7 +26,7 @@ function _curtapedia_profile_default_password_policy_settings_policy_elevated() 
     $settings['symbol_count']['symbol_count_symbols'] = '!@#$%^&*()_+=-|}{"?:><,./;\'\\[]';
     $settings = _curtapedia_profile_default_password_policy_settings_combine($settings);
     //drupal_set_message(t('@function function run. Elevated policy settings array created.', array('@function' => __FUNCTION__)), 'notice');
-    return($settings);
+    return $settings;
 }
 
 // Define settings array for password policy settings common to all polcies
@@ -43,7 +43,7 @@ function _curtapedia_profile_default_password_policy_settings_policy_common() {
     $settings['int_count']['int_count'] = '1'; // Minimum of 1 number.
     $settings['username']['username'] = TRUE; // Do not allow username in password
     //drupal_set_message(t('@function function run. Common settings array created.', array('@function' => __FUNCTION__)), 'notice');
-    return($settings);
+    return $settings;
 }
 
 // Create Password Policies
@@ -66,11 +66,12 @@ function curtapedia_profile_default_password_policy_alter(&$policies) {
     $password_policy->config = serialize($settings);
     $policies['Elevated'] = $password_policy;
     //drupal_set_message(t('@function function run. Password policies added.', array('@function' => __FUNCTION__)), 'notice');
+    return $policies;
 }
 
 // Combine common and unique settings arrays
 function _curtapedia_profile_default_password_policy_settings_combine(array $settings) {
     $settings = array_merge($settings, _curtapedia_profile_default_password_policy_settings_policy_common());
     //drupal_set_message(t('@function function run. Arrays merged.', array('@function' => __FUNCTION__)), 'notice');
-    return($settings);
+    return $settings;
 }
