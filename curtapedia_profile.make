@@ -1,12 +1,48 @@
+;;;
+;; Copyright (C) 2014 Curtis Blumer
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License
+;; as published by the Free Software Foundation; either version 2
+;; of the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+;;;
+
 api = 2
 core = 7.x
 
-;;; Download Drupal and the Responsive Bartik theme ;;;
+;; Download Drupal and the Responsive Bartik theme
 
 ;projects[] = "drupal"
 projects[responsive_bartik][version] = "1"
 
-;;; Contributed modules ;;;
+;;;
+;; Custom modules
+;;;
+
+; Download installation profile locally
+projects[curtapedia_profile][type] = "module"
+projects[curtapedia_profile][download][type] = "git"
+projects[curtapedia_profile][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
+projects[curtapedia_profile][download][branch] = "master"
+
+; Download installation profile for GitHub
+;projects[curtapedia_profile][type] = "profile"
+;projects[curtapedia_profile][download][type] = "git"
+;projects[curtapedia_profile][download][url] = "https://github.com/cblumer88/curtapedia_security.git"
+;projects[curtapedia_profile][download][branch] = "master"
+
+;;;
+;; Contributed modules
+;;;
 
 ;; Modules included or superceded by Drupal 8 ;;
 
@@ -128,8 +164,8 @@ projects[views_bulk_operations][version] = "3"
 projects[views_bulk_operations][subdir] = "contrib"
 
 
-;; Viniculum 1.x allows for Trackbacks and Pingbacks ;;
-;; Patches clean up code and add support for Rules ;;
+;; Viniculum 1.x allows for Trackbacks and Pingbacks
+;; Patches clean up code and add support for Rules
 ;projects[viniculum][type] = "module"
 ;projects[viniculum][subdir] = "patched"
 ;projects[viniculum][download][url] = "https://git.drupal.org/project/vinculum.git"
@@ -146,7 +182,7 @@ projects[viniculum][download][revision] = "a91754ad118504f414d2fcc54315830845475
 projects[viniculum][subdir] = "contrib-git"
 
 
-;; Essentials modules ;;
+;; Essentials modules
 
 projects[autosave][version] = "1"
 projects[autosave][subdir] = "contrib"
@@ -184,21 +220,6 @@ projects[uuid_redirect][subdir] = "contrib"
 ;projects[uuid_path][download][branch] = "7.x-1.x"
 ;projects[uuid_path][download][revision] = "1c9b95a4db95e7f2c6fe8d5291a0f45157964dd2"
 ;projects[uuid_path][subdir] = "contrib-git"
-
-
-;; Security modules
-;;
-;; These modules help to secure Drupal in various ways
-
-projects[password_policy][version] = "2"
-projects[password_policy][subdir] = "contrib"
-
-projects[userprotect][version] = "1"
-projects[userprotect][subdir] = "contrib"
-
-projects[user_settings_access][version] = "1"
-projects[user_settings_access][subdir] = "contrib"
-
 
 ;; HTML5 modules
 ;;
