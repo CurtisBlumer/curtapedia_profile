@@ -24,6 +24,5 @@ dependencies[] = navbar
 
 ; Contrib dependenices
 dependencies[] = libraries
-dependencies[] = password_policy
 
 ; Custom dependencies
