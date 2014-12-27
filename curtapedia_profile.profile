@@ -115,7 +115,7 @@ function _curtapedia_profile_install_additional_modules() {
   if ($install_state['parameters']['use_dfp']) {
     $modules[] = 'commerce_kickstart_dfp';
   }*/
-  $modules[] = "curtapedia_d8"
+  $modules[] = "curtapedia_d8";
   // Resolve the dependencies now, so that module_enable() doesn't need
   // to do it later for each individual module (which kills performance).
   $files = system_rebuild_module_data();
