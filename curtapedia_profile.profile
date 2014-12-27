@@ -26,7 +26,7 @@ function curtapedia_profile_install_tasks($install_state) {
     'display_name' => st('Drupal 8-ifying your site'),
     'type' => 'normal',
     'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-    'function' => '_curtapedia_profile_enable_curtapedia_d8'
+    'function' => '_curtapedia_profile_module_enable_curtapedia_d8'
   );
   /*$tasks['curtapedia_security'] = array(
     'display_name' => st('Securing your site'),
