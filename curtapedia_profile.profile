@@ -26,11 +26,11 @@ function curtapedia_profile_install_tasks($install_state) {
         'display_name' => st('Securing your site'),
         'type' => 'normal',
         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-        'function' => '_curtapedia_profile_site_security'
+        'function' => '_curtapedia_profile_enable_curtapedia_security'
     );*/
     return $tasks;
 }
-function _curtapedia_profile_site_security() {
+function _curtapedia_profile_module_enable_curtapedia_security() {
   $module_list = array(
       'curtapedia_security',
   );
