@@ -29,16 +29,16 @@ projects[responsive_bartik][version] = "1"
 ;;;
 
 ; Download installation profile locally
-projects[curtapedia_profile][type] = "module"
-projects[curtapedia_profile][download][type] = "git"
-projects[curtapedia_profile][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
-projects[curtapedia_profile][download][branch] = "master"
+;projects[curtapedia_security][type] = "module"
+;projects[curtapedia_security][download][type] = "git"
+;projects[curtapedia_security][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
+;projects[curtapedia_security][download][branch] = "master"
 
 ; Download installation profile for GitHub
-;projects[curtapedia_profile][type] = "profile"
-;projects[curtapedia_profile][download][type] = "git"
-;projects[curtapedia_profile][download][url] = "https://github.com/cblumer88/curtapedia_security.git"
-;projects[curtapedia_profile][download][branch] = "master"
+;projects[curtapedia_security][type] = "profile"
+;projects[curtapedia_security][download][type] = "git"
+;projects[curtapedia_security][download][url] = "https://github.com/cblumer88/curtapedia_security.git"
+;projects[curtapedia_security][download][branch] = "master"
 
 ;;;
 ;; Contributed modules
