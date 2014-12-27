@@ -22,12 +22,12 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
 }
 
 function curtapedia_profile_install_tasks($install_state) {
-    $tasks['curtapedia_profile_site_security'] = array(
+    /*$tasks['curtapedia_security'] = array(
         'display_name' => st('Securing your site'),
         'type' => 'normal',
         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
         'function' => '_curtapedia_profile_site_security'
-    );
+    );*/
     return $tasks;
 }
 function _curtapedia_profile_site_security() {
