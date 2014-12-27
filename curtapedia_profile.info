@@ -16,12 +16,6 @@ exclusive = TRUE
 ;dependencies[] = shortcut
 ;dependencies[] = taxonomy
 
-; "Drupal 8" dependencies
-;dependencies[] = ckeditor
-;dependencies[] = filter_perms
-;dependencies[] = module_filter
-;dependencies[] = navbar
-
 ; Contrib dependenices
 dependencies[] = libraries
 
