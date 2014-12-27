@@ -32,7 +32,7 @@ projects[responsive_bartik][version] = "1"
 
 project[curtapedia_profile_d8][type] = "module"
 project[curtapedia_profile_d8][download][type] = "git"
-project[curtapedia_profile_d8][download][url] = "file://curtapedia_profile_d8/.git"
+project[curtapedia_profile_d8][download][url] = "file:///home/cblumer/Development/curtapedia_profile/curtapedia_profile_d8/.git"
 project[curtapedia_profile_d8][download][branch] = "7.x-1.x"
 
 ; Download installation profile locally
