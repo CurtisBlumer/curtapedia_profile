@@ -28,7 +28,7 @@ projects[responsive_bartik][version] = "1"
 ;; Custom modules
 ;;;
 
-; Get Curtapedia Drupal 8 enhancements dependencies
+; Get Curtapedia Drupal 8 enhancements
 
 projects[curtapedia_d8][type] = "module"
 projects[curtapedia_d8][subdir] = "custom"
@@ -37,10 +37,10 @@ projects[curtapedia_d8][download][url] = "file:///home/cblumer/Development/curta
 projects[curtapedia_d8][download][branch] = "7.x-1.x"
 
 ; Download installation profile locally
-;projects[curtapedia_security][type] = "module"
-;projects[curtapedia_security][download][type] = "git"
-;projects[curtapedia_security][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
-;projects[curtapedia_security][download][branch] = "7.x-1.x"
+projects[curtapedia_security][type] = "module"
+projects[curtapedia_security][download][type] = "git"
+projects[curtapedia_security][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
+projects[curtapedia_security][download][branch] = "7.x-1.x"
 
 ; Download installation profile for GitHub
 ;projects[curtapedia_security][type] = "module"
@@ -71,6 +71,9 @@ projects[viniculum][subdir] = "contrib-git"
 
 
 ;; Essentials modules
+
+projects[advanced_help][version] = "1"
+projects[advanced_help][subdir] = "contrib"
 
 projects[autosave][version] = "1"
 projects[autosave][subdir] = "contrib"
