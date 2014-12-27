@@ -31,18 +31,19 @@ projects[responsive_bartik][version] = "1"
 ; Get Curtapedia Drupal 8 enhancements dependencies
 
 project[curtapedia_profile_d8][type] = "module"
+projects[viniculum][subdir] = "custom"
 project[curtapedia_profile_d8][download][type] = "git"
-project[curtapedia_profile_d8][download][url] = "file:///home/cblumer/Development/curtapedia_profile/curtapedia_profile_d8/.git"
+project[curtapedia_profile_d8][download][url] = "file:///home/cblumer/Development/curtapedia_d8/.git"
 project[curtapedia_profile_d8][download][branch] = "7.x-1.x"
 
 ; Download installation profile locally
 ;projects[curtapedia_security][type] = "module"
 ;projects[curtapedia_security][download][type] = "git"
 ;projects[curtapedia_security][download][url] = "file:///home/cblumer/Development/curtapedia_security/.git"
-;projects[curtapedia_security][download][branch] = "master"
+;projects[curtapedia_security][download][branch] = "7.x-1.x"
 
 ; Download installation profile for GitHub
-;projects[curtapedia_security][type] = "profile"
+;projects[curtapedia_security][type] = "module"
 ;projects[curtapedia_security][download][type] = "git"
 ;projects[curtapedia_security][download][url] = "https://github.com/cblumer88/curtapedia_security.git"
 ;projects[curtapedia_security][download][branch] = "master"
