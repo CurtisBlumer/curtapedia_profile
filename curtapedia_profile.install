@@ -140,7 +140,6 @@ function _curtapedia_profile_node_types_save(array &$node_types) {
     $node_type = node_type_set_defaults($node_type);
     $node_type_save = node_type_save($node_type);
     $node_add_body_field = node_add_body_field($node_type);
-    }
   }
 }
 
