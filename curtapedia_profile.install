@@ -58,22 +58,22 @@ function curtapedia_profile_install() {
    * Defines and creates other Drupal 7 roles, parity with WordPress roles.
    */
   //$user_roles = _curtapedia_profile_user_roles_define();
-  $user_roles['administrator'] = $user_role = new stdClass();
-  $user_roles['administrator'] = $user_role->name = 'Site Administrator';
-  $user_roles['administrator'] = $user_role->weight = 49;
-  user_role_save($user_roles['administrator']);
+  $user_roles['administrator'] = new stdClass();
+  $user_roles['administrator']->name = 'Site Administrator';
+  $user_roles['administrator']->weight = 49;
+  //user_role_save($user_roles['administrator']);
   
-  $user_roles['editor'] = $user_role = new stdClass();
-  $user_roles['editor'] = $user_role->name = 'Editor';
-  $user_roles['editor'] = $user_role->weight = 48;
+  $user_roles['editor'] = new stdClass();
+  $user_roles['editor']->name = 'Editor';
+  $user_roles['editor']->weight = 48;
 
-  $user_roles['author'] = $user_role = new stdClass();
-  $user_roles['author'] = $user_role->name = 'Author';
-  $user_roles['author'] = $user_role->weight = 47;
+  $user_roles['author'] = new stdClass();
+  $user_roles['author']->name = 'Author';
+  $user_roles['author']->weight = 47;
 
-  $user_roles['contributor'] = $user_role = new stdClass();
-  $user_roles['contributor'] = $user_role->name = 'Contributor';
-  $user_roles['contributor'] = $user_role->weight = 46;
+  $user_roles['contributor'] = new stdClass();
+  $user_roles['contributor']->name = 'Contributor';
+  $user_roles['contributor']->weight = 46;
 
   foreach ($user_roles as $user_role) {
     user_role_save($user_role);
