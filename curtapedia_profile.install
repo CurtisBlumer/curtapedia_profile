@@ -57,7 +57,7 @@ function curtapedia_profile_install() {
    * 
    * Defines and creates other Drupal 7 roles, parity with WordPress roles.
    */
-  $user_roles = (!user_roles) ?: _curtapedia_profile_user_roles_define();
+  //$user_roles = (!user_roles) ?: _curtapedia_profile_user_roles_define();
   $user_roles['administrator'] = $user_role = new stdClass();
   $user_roles['administrator'] = $user_role->name = 'Site Administrator';
   $user_roles['administrator'] = $user_role->weight = 49;
