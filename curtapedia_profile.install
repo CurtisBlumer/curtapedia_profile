@@ -64,7 +64,7 @@ function curtapedia_profile_install() {
   $user_roles['administrator']['permissions'] = array(
     'administer blocks',
     'access content',
-    'access navbar',
+    //'access navbar',
     'access content overview',
     'administer nodes',
     'view own unpublished content',
@@ -82,7 +82,7 @@ function curtapedia_profile_install() {
   $user_roles['editor']['role']->weight = 48;
   $user_roles['editor']['permissions'] = array(
     'access content',
-    'access navbar',
+    //'access navbar',
     'access content overview',
     'view own unpublished content',
     'view content revisions',
@@ -97,7 +97,7 @@ function curtapedia_profile_install() {
   $user_roles['author']['role']->weight = 47;
   $user_roles['author']['permissions'] = array(
     'access content',
-    'access navbar',
+    //'access navbar',
     'access content overview',
     'view own unpublished content',
     'view content revisions',
