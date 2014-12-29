@@ -75,7 +75,7 @@ function curtapedia_profile_install() {
   $user_roles['contributor'] = $user_role->weight = 46;
 
   foreach ($user_roles as $user_role) {
-    user_role_save($user_role)
+    user_role_save($user_role);
   }
   /*
    * Update the menu router information.
