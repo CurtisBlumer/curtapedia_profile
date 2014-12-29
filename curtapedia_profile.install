@@ -53,10 +53,6 @@ function curtapedia_profile_install() {
    */
   variable_set('user_admin_role', $role_site_builder->rid);
 
-  foreach ($user_roles as $user_role) {
-    user_role_save($user_role['role']);
-    user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
-  }
   /*
    * Update the menu router information.
    * 
@@ -144,6 +140,11 @@ function curtapedia_profile_install() {
     'edit own page content',
     'access user profiles',
   );
+
+  foreach ($user_roles as $user_role) {
+    user_role_save($user_role['role']);
+    user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
+  }
 }
 
 function _curtapedia_profile_menu_links_define() {
