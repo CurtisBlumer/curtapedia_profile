@@ -111,7 +111,7 @@ function _curtapedia_profile_menu_links_define() {
   return $menu_links;
 }
 
-function _curtapedia_profile_menu_links_save(array &$menu_links)
+function _curtapedia_profile_menu_links_save(array &$menu_links) {
   foreach($menu_links as $menu_link) {
     menu_link_save($menu_link);
   }
