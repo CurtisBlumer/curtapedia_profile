@@ -6,77 +6,167 @@
  */
 
 function curtapedia_profile_install() {
-    // Any themes without keys here will get numeric keys and so will be enabled,
-    // but not placed into variables.
-    $themes = array(
-        'theme_default' => 'responsive_bartik',
-        'admin_theme' => 'seven',
-        'maintenance_theme' => 'responsive_bartik',
-    );
-    theme_enable($themes);
+  // Any themes without keys here will get numeric keys and so will be enabled,
+  // but not placed into variables.
+  $themes = array(
+    'theme_default' => 'responsive_bartik',
+    'admin_theme' => 'seven',
+    'maintenance_theme' => 'responsive_bartik',
+  );
+  theme_enable($themes);
 
-    // Use theme keys to set system variables
-    foreach ($themes as $system_variable => $enabled_theme) {
-        if (is_string($system_variable)) {
-            variable_set($system_variable, $enabled_theme);
-        }
+  // Use theme keys to set system variables
+  foreach ($themes as $system_variable => $enabled_theme) {
+    if (is_string($system_variable)) {
+      variable_set($system_variable, $enabled_theme);
     }
+  }
 
-    // Disable the Drupal 7 default theme, Bartik.
-    theme_disable(array('bartik'));
+  // Disable the Drupal 7 default theme, Bartik.
+  theme_disable(array('bartik'));
 
-    // Unset variables used. This is not strictly necessary, but good practice.
-    // Unsetting variables also allows developers to know when each portion of
-    // the function ends. 
-    unset($enable_theme, $system_variable, $enabled_theme);
+  /*
+   * Create a default role for site builders.
+   * 
+   * In Drupal this is called the Administrator Role, but that is a bit of a 
+   * misnomer given the average site admin should not be able to access some of 
+   * Drupal's more advanced settings.
+   */
+  $role_site_builder = new stdClass();
+  $role_site_builder->name = 'Site architect';
+  $role_site_builder->weight = 50;
+  user_role_save($role_site_builder);
+  user_role_grant_permissions($role_site_builder->rid, array_keys(module_invoke_all('permission')));
 
-    // Create a default role for site builders. In Drupal this is called the 
-    // Administrator Role, but that is a bit of a misnomer given the average 
-    // site admin should not be able to access some of Drupal's more advanced 
-    // settings.
-    $builder_role = new stdClass();
-    $builder_role->name = 'Site architect';
-    $builder_role->weight = 50;
-    user_role_save($builder_role);
-    user_role_grant_permissions($builder_role->rid, array_keys(module_invoke_all('permission')));
+  /*
+   * Assign User 1 the 'Site architect' role.
+   */
+  db_insert('users_roles')
+    ->fields(array(
+      'uid' => 1,
+      'rid' => $role_site_builder->rid,
+      ))
+    ->execute();
+  
+  /*
+   * Set the 'Site architect' role as the Drupal 7 'Administrator role'.
+   */
+  variable_set('user_admin_role', $role_site_builder->rid);
 
-    // Set this as the 'Administrator role'.
-    variable_set('user_admin_role', $builder_role->rid);
+  /* Define and create other Drupal 7 roles
+   * 
+   * Defines and creates other Drupal 7 roles, parity with WordPress roles.
+   */
+  $user_roles = (!user_roles) ?: _curtapedia_profile_user_roles_define();
+  $user_roles['administrator'] = $user_role = new stdClass();
+  $user_roles['administrator'] = $user_role->name = 'Site Administrator';
+  $user_roles['administrator'] = $user_role->weight = 49;,
+  
+  $user_roles['editor'] = $user_role = new stdClass();
+  $user_roles['editor'] = $user_role->name = 'Editor';
+  $user_roles['editor'] = $user_role->weight = 48;
 
-    // Assign User 1 the 'Site architect' role.
-    db_insert('users_roles')
-        ->fields(array(
-            'uid' => 1,
-            'rid' => $builder_role->rid,
-        ))
-        ->execute();
+  $user_roles['author'] = $user_role = new stdClass();
+  $user_roles['author'] = $user_role->name = 'Author';
+  $user_roles['author'] = $user_role->weight = 46;
 
-    // Unset variable used for this portion of the function.
-    unset($builder_role);
+  $user_roles['contributor'] = $user_role = new stdClass();
+  $user_roles['contributor'] = $user_role->name = 'Contributor';
+  $user_roles['contributor'] = $user_role->weight = 46;
 
-    $menu_links = array(
-        // Create a Home link in the main menu.
-        array(
-            'link_title' => st('Home'),
-            'link_path' => '<front>',
-            'menu_name' => 'main-menu',
+  foreach ($user_roles as $user_role) {
+    user_role_save($user_role)
+  }
+  /*
+   * Update the menu router information.
+   * 
+   * Creates some pre-defined links in the menu system to speed up deployment.
+   */
+  $menu_links = (!$menu_links) ?: _curtapedia_profile_menu_links_define();
+  _curtapedia_profile_menu_links_save($menu_links);
+  menu_rebuild();
+
+  /*
+   * Create default Node types
+   */
+  $node_types = _curtapedia_profile_node_types_define();
+  _curtapedia_profile_node_types_save($node_types);
+  
+  /*
+   * Create RDF mappings for Node types
+   */
+  $rdf_mappings = _curtapedia_profile_node_types_rdf_mapping_define();
+  _curtapedia_profile_node_types_rdf_mapping_save($rdf_mappings);
+}
+
+function _curtapedia_profile_menu_links_define() {
+  $menu_links = array(
+    // Create a Home link in the main menu.
+    array(
+      'link_title' => st('Home'),
+      'link_path' => '<front>',
+      'menu_name' => 'main-menu',
+    ),
+  );
+  return $menu_links
+}
+
+function _curtapedia_profile_menu_links_save(array &$menu_links)
+  foreach($menu_links as $menu_link) {
+    menu_link_save($menu_link);
+  }
+}
+
+function _curtapedia_profile_node_types_define() {
+  // Insert default pre-defined node types into the database. For a complete
+  // list of available node type attributes, refer to the node type API
+  // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
+  node_types = array(
+    array(
+      'type' => 'page',
+      'name' => st('Basic page'),
+      'base' => 'node_content',
+      'description' => st("Use a <em>@content_type</em> for static content, content that rarely changes.", array("@content_type" => $content_type[0])),
+      'custom' => 1,
+      'modified' => 1,
+      'locked' => 0,
+    ),
+  );
+  return $node_types;
+}
+
+function _curtapedia_profile_node_types_save(array &$node_types) {
+  foreach ($node_types as $node_type) {
+    $node_type = node_type_set_defaults($node_type);
+    $node_type_save = node_type_save($node_type);
+    $node_add_body_field = node_add_body_field($node_type);
+    }
+  }
+}
+
+function _curtapedia_profile_node_types_rdf_mapping_define() {
+  $rdf_mappings = array(
+    array(
+      'type' => 'node',
+      'bundle' => 'page',
+      'mapping' => array(
+        'rdftype' => array('foaf:Document', 'schema:WebPage'),
+        'title' => array(
+            'predicates' => array('dc:title', 'schema:mainContentOfPage'),
         ),
-        /*array(
-            'link_title' => st('Test'),
-            'link_path' => '<front>',
-            'menu_name' => 'main-menu',
-        ),*/
-    );
+        'body' => array(
+            'predicates' => array('schema:mainContentOfPage'),
+        ),
+      ),
+    ),
+  );
+  return $rdf_mappings;
+}
 
-    foreach($menu_links as $menu_link) {
-        menu_link_save($menu_link);
-    }
-
-    // Update the menu router information.
-    menu_rebuild();
-
-    // Unset variable used for this portion of the function.
-    unset($menu_links, $menu_link);
+function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
+  foreach ($rdf_mappings as $rdf_mapping) {
+    rdf_mapping_save($rdf_mapping);
+  }
 }
 
 /**
