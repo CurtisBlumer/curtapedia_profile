@@ -58,9 +58,9 @@ function curtapedia_profile_install() {
    * Defines and creates other Drupal 7 roles, parity with WordPress roles.
    */
   //$user_roles = _curtapedia_profile_user_roles_define();
-  $user_roles['administrator'] = new stdClass();
-  $user_roles['administrator']->name = 'Site Administrator';
-  $user_roles['administrator']->weight = 49;
+  $user_roles['administrator']['role'] = new stdClass();
+  $user_roles['administrator']['role']->name = 'Site Administrator';
+  $user_roles['administrator']['role']->weight = 49;
   $user_roles['administrator']['permissions'] = array(
     'administer blocks',
     'access content',
@@ -77,9 +77,9 @@ function curtapedia_profile_install() {
     'access user profiles',
   );
   
-  $user_roles['editor'] = new stdClass();
-  $user_roles['editor']->name = 'Editor';
-  $user_roles['editor']->weight = 48;
+  $user_roles['editor']['role'] = new stdClass();
+  $user_roles['editor']['role']->name = 'Editor';
+  $user_roles['editor']['role']->weight = 48;
   $user_roles['editor']['permissions'] = array(
     'access content',
     'access navbar',
@@ -92,9 +92,9 @@ function curtapedia_profile_install() {
     'access user profiles',
   );
 
-  $user_roles['author'] = new stdClass();
-  $user_roles['author']->name = 'Author';
-  $user_roles['author']->weight = 47;
+  $user_roles['author']['role'] = new stdClass();
+  $user_roles['author']['role']->name = 'Author';
+  $user_roles['author']['role']->weight = 47;
   $user_roles['author']['permissions'] = array(
     'access content',
     'access navbar',
@@ -106,9 +106,9 @@ function curtapedia_profile_install() {
     'access user profiles',
   );
 
-  $user_roles['contributor'] = new stdClass();
-  $user_roles['contributor']->name = 'Contributor';
-  $user_roles['contributor']->weight = 46;
+  $user_roles['contributor']['role'] = new stdClass();
+  $user_roles['contributor']['role']->name = 'Contributor';
+  $user_roles['contributor']['role']->weight = 46;
   $user_roles['contributor']['permissions'] = array(
     'access content',
     'view own unpublished content',
@@ -119,8 +119,8 @@ function curtapedia_profile_install() {
   );
 
   foreach ($user_roles as $user_role) {
-    user_role_save($user_role);
-    user_role_grant_permissions($user_role->rid, $user_role['permissions']);
+    user_role_save($user_role['role']);
+    user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
   }
   /*
    * Update the menu router information.
