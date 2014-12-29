@@ -60,7 +60,7 @@ function curtapedia_profile_install() {
   $user_roles = (!user_roles) ?: _curtapedia_profile_user_roles_define();
   $user_roles['administrator'] = $user_role = new stdClass();
   $user_roles['administrator'] = $user_role->name = 'Site Administrator';
-  $user_roles['administrator'] = $user_role->weight = 49;,
+  $user_roles['administrator'] = $user_role->weight = 49;
   
   $user_roles['editor'] = $user_role = new stdClass();
   $user_roles['editor'] = $user_role->name = 'Editor';
@@ -68,7 +68,7 @@ function curtapedia_profile_install() {
 
   $user_roles['author'] = $user_role = new stdClass();
   $user_roles['author'] = $user_role->name = 'Author';
-  $user_roles['author'] = $user_role->weight = 46;
+  $user_roles['author'] = $user_role->weight = 47;
 
   $user_roles['contributor'] = $user_role = new stdClass();
   $user_roles['contributor'] = $user_role->name = 'Contributor';
