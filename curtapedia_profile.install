@@ -33,7 +33,7 @@ function curtapedia_profile_install() {
    * Drupal's more advanced settings.
    */
   $role_site_builder = new stdClass();
-  $role_site_builder->name = 'Site architect';
+  $role_site_builder->name = 'Site Architect';
   $role_site_builder->weight = 50;
   user_role_save($role_site_builder);
   user_role_grant_permissions($role_site_builder->rid, array_keys(module_invoke_all('permission')));
@@ -61,22 +61,66 @@ function curtapedia_profile_install() {
   $user_roles['administrator'] = new stdClass();
   $user_roles['administrator']->name = 'Site Administrator';
   $user_roles['administrator']->weight = 49;
-  //user_role_save($user_roles['administrator']);
+  $user_roles['administrator']['permissions'] = array(
+    'administer blocks',
+    'access content',
+    'access navbar',
+    'access content overview',
+    'administer nodes',
+    'view own unpublished content',
+    'view content revisions',
+    'revert content revisions',
+    'delete content revisions',
+    'administer themes',
+    'access administration pages',
+    'access site in maintenance mode',
+    'access user profiles',
+  );
   
   $user_roles['editor'] = new stdClass();
   $user_roles['editor']->name = 'Editor';
   $user_roles['editor']->weight = 48;
+  $user_roles['editor']['permissions'] = array(
+    'access content',
+    'access navbar',
+    'access content overview',
+    'view own unpublished content',
+    'view content revisions',
+    'revert content revisions',
+    'create any page content',
+    'edit any page content',
+    'access user profiles',
+  );
 
   $user_roles['author'] = new stdClass();
   $user_roles['author']->name = 'Author';
   $user_roles['author']->weight = 47;
+  $user_roles['author']['permissions'] = array(
+    'access content',
+    'access navbar',
+    'access content overview',
+    'view own unpublished content',
+    'view content revisions',
+    'create own page content',
+    'edit own page content',
+    'access user profiles',
+  );
 
   $user_roles['contributor'] = new stdClass();
   $user_roles['contributor']->name = 'Contributor';
   $user_roles['contributor']->weight = 46;
+  $user_roles['contributor']['permissions'] = array(
+    'access content',
+    'view own unpublished content',
+    'view content revisions',
+    'create own page content',
+    'edit own page content',
+    'access user profiles',
+  );
 
   foreach ($user_roles as $user_role) {
     user_role_save($user_role);
+    user_role_grant_permissions($user_role->rid, $user_role['permissions']);
   }
   /*
    * Update the menu router information.
