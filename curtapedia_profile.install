@@ -7,10 +7,7 @@
  * @author cblumer88
  * @copyright (c) 2014, Curtis Blumer
  * @version 7.x-1.x-dev
- * @package curtapedia_profile
  */
-
-//namespace Drupal\curtapedia_profile;
 
 /**
  * Implements hook_install().
@@ -20,9 +17,6 @@
  * @see system_install()
  */
 function curtapedia_profile_install() {
-
-  // Any themes without keys here will get numeric keys and so will be enabled,
-  // but not placed into variables.
   $themes = array(
     'theme_default' => 'responsive_bartik',
     'admin_theme' => 'seven',
@@ -40,23 +34,15 @@ function curtapedia_profile_install() {
   // Disable the Drupal 7 default theme, Bartik.
   theme_disable(array('bartik'));
 
-  /*
-   * Update the menu router information.
-   * 
-   * Creates some pre-defined links in the menu system to speed up deployment.
-   */
+  // Update the menu router information.
   $menu_links = _curtapedia_profile_menu_links_define();
   _curtapedia_profile_menu_links_save($menu_links);
 
-  /*
-   * Create default Node types
-   */
+  // Create default Node types
   $node_types = _curtapedia_profile_node_types_define();
   _curtapedia_profile_node_types_save($node_types);
   
-  /*
-   * Create RDF mappings for Node types
-   */
+  // Create RDF mappings for Node types
   $rdf_mappings = _curtapedia_profile_node_types_rdf_mapping_define();
   _curtapedia_profile_node_types_rdf_mapping_save($rdf_mappings);
 
@@ -67,7 +53,6 @@ function curtapedia_profile_install() {
   // Create user roles with default WordPress role/permission parity
   $user_roles = _curtapedia_profile_user_roles_define();
   _curtapedia_profile_user_roles_define($user_roles);
-
 }
 
 function _curtapedia_profile_text_formats_define() {
