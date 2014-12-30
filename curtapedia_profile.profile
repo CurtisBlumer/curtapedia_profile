@@ -41,11 +41,18 @@ function curtapedia_profile_install_tasks() {
 }
 
 function _curtapedia_profile_user_settings_install() {
+  // Load permissions include file.
   module_load_include(inc, curtapedia_profile, includes/curtapedia_profile.permissions);
+  
+  // Create admin role.
+  _curtapedia_profile_user_settings_role_admin_create();
+  
+  // Get pre-defined roles.
   $drupal_roles = _curtapedia_profile_user_settings_roles_define();
-  $default_weight = 50;
+  
+  // Loop through roles and find default permissions.
   foreach($drupal_roles as $index => $role) {
-    $weight = $default_weight - $index;
+    $weight = 10 - $index; // Fixes weighting problem with ordering by most powerful account.
     $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
   }
   $operations[] = array('curtapedia_profile_user_settings_flush_caches');
