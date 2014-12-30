@@ -138,14 +138,14 @@ function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$c
       '@close_tags' => "</code></pre>",
       '@var_dump' => var_dump($user_object),
     );
-    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE)
+    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE);
     $role_object = user_role_load($role_id);
     $replacements = array(
       '@open_tags' => "<pre><code>",
       '@close_tags' => "</code></pre>",
       '@var_dump' => var_dump($role_object),
     );
-    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE)
+    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE);
     $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
     sleep(SLEEP_TIMER);
   } else {
