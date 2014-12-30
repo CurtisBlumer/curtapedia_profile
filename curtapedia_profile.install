@@ -13,6 +13,7 @@
  *
  * @see system_install()
  */
+
 function curtapedia_profile_install() {
 
   // Any themes without keys here will get numeric keys and so will be enabled,
@@ -33,11 +34,6 @@ function curtapedia_profile_install() {
 
   // Disable the Drupal 7 default theme, Bartik.
   theme_disable(array('bartik'));
-  
-  /*
-   * Set the 'Site architect' role as the Drupal 7 'Administrator role'.
-   */
-  variable_set('user_admin_role', $role_site_builder->rid);
 
   /*
    * Update the menu router information.
@@ -46,7 +42,6 @@ function curtapedia_profile_install() {
    */
   $menu_links = _curtapedia_profile_menu_links_define();
   _curtapedia_profile_menu_links_save($menu_links);
-  menu_rebuild();
 
   /*
    * Create default Node types
@@ -128,7 +123,7 @@ function _curtapedia_profile_text_formats_define() {
 function _curtapedia_profile_text_formats_save(array &$text_formats) {
 
   foreach($text_formats as $text_format) {
-    $text_format = (object) $text_format;
+    //$text_format = (object) $text_format;
     filter_format_save($text_format);
   }
 
@@ -166,7 +161,7 @@ function _curtapedia_profile_user_roles_admininstrator_role_define() {
  */
 function _curtapedia_profile_user_roles_admininstrator_role_save(array &$administrator_role) {
   user_role_save($administrator_role['role']);
-  user_role_grant_permissions($administrator_role['role'], $administrator_role['permissions']);
+  user_role_grant_permissions($administrator_role['role']->rid, $administrator_role['permissions']);
 
   //Assign User 1 the Drupal Administrator Role.
   db_insert('users_roles')
@@ -175,6 +170,9 @@ function _curtapedia_profile_user_roles_admininstrator_role_save(array &$adminis
       'rid' => $administrator_role['role']->rid,
       ))
     ->execute();
+  
+  // Set the role in the Variables table
+  variable_set('user_admin_role', $administrator_role['role']->rid);
 }
 
 /* Define other Drupal user roles
@@ -188,7 +186,7 @@ function _curtapedia_profile_user_roles_admininstrator_role_save(array &$adminis
  * @todo Move permission configuration into install task.
 */
 function _curtapedia_profile_user_roles_define() {
-
+  $user_roles = array();
   $user_roles['site administrator']['role'] = new stdClass();
   $user_roles['site administrator']['role']->name = 'Site Administrator';
   $user_roles['site administrator']['role']->weight = 49;
@@ -248,7 +246,7 @@ function _curtapedia_profile_user_roles_define() {
     'edit own page content',
     'access user profiles',
   );
-  return $user_roles;
+  return (array)$user_roles;
 }
 
 /*
@@ -258,8 +256,8 @@ function _curtapedia_profile_user_roles_define() {
  * 
  * @todo Move permission configuration into install task.
  */
-function _curtapedia_profile_user_roles_save(array &$user_roles) { {
-  foreach ($user_roles as $user_role) {
+function _curtapedia_profile_user_roles_save(array &$user_roles) {
+  foreach($user_roles as $user_role) {
     user_role_save($user_role['role']);
     user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
   }
@@ -281,6 +279,7 @@ function _curtapedia_profile_menu_links_save(array &$menu_links) {
   foreach($menu_links as $menu_link) {
     menu_link_save($menu_link);
   }
+  menu_rebuild();
 }
 
 function _curtapedia_profile_node_types_define() {
@@ -288,16 +287,14 @@ function _curtapedia_profile_node_types_define() {
   // list of available node type attributes, refer to the node type API
   // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
   $node_types = array(
-    array(
       'type' => 'page',
       'name' => st('Basic page'),
       'base' => 'node_content',
-      'description' => st("Use a <em>@content_type</em> for static content, content that rarely changes.", array("@content_type" => $content_type[0])),
+      'description' => st("Use a <em>Basic page/em> for static content, content that rarely changes."),
       'custom' => 1,
       'modified' => 1,
       'locked' => 0,
-    ),
-  );
+    );
 
   /*
    * Default publishing options for "Basic page".
@@ -324,10 +321,10 @@ function _curtapedia_profile_node_types_define() {
 }
 
 function _curtapedia_profile_node_types_save(array &$node_types) {
-  foreach ($node_types as $node_type) {
+  foreach($node_types as $node_type) {
     $node_type = node_type_set_defaults($node_type);
-    $node_type_save = node_type_save($node_type);
-    $node_add_body_field = node_add_body_field($node_type);
+    node_type_save($node_type);
+    node_add_body_field($node_type);
   }
 }
 
@@ -351,310 +348,7 @@ function _curtapedia_profile_node_types_rdf_mapping_define() {
 }
 
 function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
-  foreach ($rdf_mappings as $rdf_mapping) {
+  foreach($rdf_mappings as $rdf_mapping) {
     rdf_mapping_save($rdf_mapping);
   }
 }
-
-/*function standard_install() {
-
-
-  // Enable some standard blocks.
-  $default_theme = variable_get('theme_default', 'bartik');
-  $admin_theme = 'seven';
-  $blocks = array(
-    array(
-      'module' => 'system',
-      'delta' => 'main',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'content',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'search',
-      'delta' => 'form',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => -1,
-      'region' => 'sidebar_first',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'node',
-      'delta' => 'recent',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 10,
-      'region' => 'dashboard_main',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'login',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'sidebar_first',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'system',
-      'delta' => 'navigation',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'sidebar_first',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'system',
-      'delta' => 'powered-by',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 10,
-      'region' => 'footer',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'system',
-      'delta' => 'help',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'help',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'system',
-      'delta' => 'main',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'content',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'system',
-      'delta' => 'help',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'help',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'login',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 10,
-      'region' => 'content',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'new',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'dashboard_sidebar',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'search',
-      'delta' => 'form',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => -10,
-      'region' => 'dashboard_sidebar',
-      'pages' => '',
-      'cache' => -1,
-    ),
-  );
-  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
-  foreach ($blocks as $block) {
-    $query->values($block);
-  }
-  $query->execute();
-
-  // Insert default pre-defined node types into the database. For a complete
-  // list of available node type attributes, refer to the node type API
-  // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
-  $types = array(
-    array(
-      'type' => 'page',
-      'name' => st('Basic page'),
-      'base' => 'node_content',
-      'description' => st("Use <em>basic pages</em> for your static content, such as an 'About us' page."),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
-    ),
-    array(
-      'type' => 'article',
-      'name' => st('Article'),
-      'base' => 'node_content',
-      'description' => st('Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.'),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
-    ),
-  );
-
-  foreach ($types as $type) {
-    $type = node_type_set_defaults($type);
-    node_type_save($type);
-    node_add_body_field($type);
-  }
-
-  // Default "Basic page" to not be promoted and have comments disabled.
-  variable_set('node_options_page', array('status'));
-  variable_set('comment_page', COMMENT_NODE_HIDDEN);
-
-  // Don't display date and author information for "Basic page" nodes by default.
-  variable_set('node_submitted_page', FALSE);
-
-  // Enable user picture support and set the default to a square thumbnail option.
-  variable_set('user_pictures', '1');
-  variable_set('user_picture_dimensions', '1024x1024');
-  variable_set('user_picture_file_size', '800');
-  variable_set('user_picture_style', 'thumbnail');
-
-  // Allow visitor account creation with administrative approval.
-  variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
-
-  // Create a default vocabulary named "Tags", enabled for the 'article' content type.
-  $description = st('Use tags to group articles on similar topics into categories.');
-  $vocabulary = (object) array(
-    'name' => st('Tags'),
-    'description' => $description,
-    'machine_name' => 'tags',
-  );
-  taxonomy_vocabulary_save($vocabulary);
-
-  $field = array(
-    'field_name' => 'field_' . $vocabulary->machine_name,
-    'type' => 'taxonomy_term_reference',
-    // Set cardinality to unlimited for tagging.
-    'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-    'settings' => array(
-      'allowed_values' => array(
-        array(
-          'vocabulary' => $vocabulary->machine_name,
-          'parent' => 0,
-        ),
-      ),
-    ),
-  );
-  field_create_field($field);
-
-  $help = st('Enter a comma-separated list of words to describe your content.');
-  $instance = array(
-    'field_name' => 'field_' . $vocabulary->machine_name,
-    'entity_type' => 'node',
-    'label' => 'Tags',
-    'bundle' => 'article',
-    'description' => $help,
-    'widget' => array(
-      'type' => 'taxonomy_autocomplete',
-      'weight' => -4,
-    ),
-    'display' => array(
-      'default' => array(
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 10,
-      ),
-      'teaser' => array(
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 10,
-      ),
-    ),
-  );
-  field_create_instance($instance);
-
-
-  // Create an image field named "Image", enabled for the 'article' content type.
-  // Many of the following values will be defaulted, they're included here as an illustrative examples.
-  // See http://api.drupal.org/api/function/field_create_field/7
-
-  $field = array(
-    'field_name' => 'field_image',
-    'type' => 'image',
-    'cardinality' => 1,
-    'locked' => FALSE,
-    'indexes' => array('fid' => array('fid')),
-    'settings' => array(
-      'uri_scheme' => 'public',
-      'default_image' => FALSE,
-    ),
-    'storage' => array(
-      'type' => 'field_sql_storage',
-      'settings' => array(),
-    ),
-  );
-  field_create_field($field);
-
-
-  // Many of the following values will be defaulted, they're included here as an illustrative examples.
-  // See http://api.drupal.org/api/function/field_create_instance/7
-  $instance = array(
-    'field_name' => 'field_image',
-    'entity_type' => 'node',
-    'label' => 'Image',
-    'bundle' => 'article',
-    'description' => st('Upload an image to go with this article.'),
-    'required' => FALSE,
-
-    'settings' => array(
-      'file_directory' => 'field/image',
-      'file_extensions' => 'png gif jpg jpeg',
-      'max_filesize' => '',
-      'max_resolution' => '',
-      'min_resolution' => '',
-      'alt_field' => TRUE,
-      'title_field' => '',
-    ),
-
-    'widget' => array(
-      'type' => 'image_image',
-      'settings' => array(
-        'progress_indicator' => 'throbber',
-        'preview_image_style' => 'thumbnail',
-      ),
-      'weight' => -1,
-    ),
-
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'type' => 'image',
-        'settings' => array('image_style' => 'large', 'image_link' => ''),
-        'weight' => -1,
-      ),
-      'teaser' => array(
-        'label' => 'hidden',
-        'type' => 'image',
-        'settings' => array('image_style' => 'medium', 'image_link' => 'content'),
-        'weight' => -1,
-      ),
-  );
-  field_create_instance($instance);
-
-  // Enable default permissions for system roles.
-  $filtered_html_permission = filter_permission_name($filtered_html_format);
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access comments', $filtered_html_permission));
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access comments', 'post comments', 'skip comment approval', $filtered_html_permission));
-}*/
