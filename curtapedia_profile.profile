@@ -45,7 +45,7 @@ function _curtapedia_profile_user_settings_install() {
   module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
   
   // Create admin role.
-  $operations[] = array('_curtapedia_profile_user_settings_role_admin_create');
+  $operations[] = array('_curtapedia_profile_user_settings_role_admin_create', array());
  
   if(function_exists('_curtapedia_profile_user_settings_roles_define')) {
     // Get pre-defined roles.
@@ -58,7 +58,7 @@ function _curtapedia_profile_user_settings_install() {
     }
   }
   
-  $operations[] = array('curtapedia_profile_user_settings_flush_caches');
+  $operations[] = array('curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
 
   $batch = array(
     'title' => t('Setting up default user roles and permissions'),
@@ -84,17 +84,16 @@ function _curtapedia_profile_install_additional_modules() {
     }
   }
   $modules = array_unique($modules);
-  $modules_sorted = array();
-  foreach ($modules as $weight => $module) {
+  foreach ($modules as $module) {
     $modules_sorted[$module] = $files[$module]->sort;
   }
   arsort($modules_sorted);
 
-  foreach ($modules_sorted as $module) {
+  foreach ($modules_sorted as $module => $weight) {
     $operations[] = array('_curtapedia_profile_enable_module', array($module, $files[$module]->info['name']));
   }
   
-  $operations[] = array('_curtapedia_profile_flush_caches', array(t('Flushed caches.')));
+  $operations[] = array('_curtapedia_profile_flush_caches', array('Flushed caches.'));
 
   $batch = array(
     'title' => t('Installing additional functionality'),

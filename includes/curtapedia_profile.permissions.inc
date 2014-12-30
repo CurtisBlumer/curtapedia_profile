@@ -160,7 +160,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
  * 
  * This function only exists so that it may report back to the Batch API.
  */
-function _curtapedia_profile_user_settings_flush_caches($operation, &$context) {
-  $context['message'] = t('Flushed all caches.');
+function _curtapedia_profile_flush_caches($operation, &$context) {
+  $context['message'] = t('@operation', array('@operation' => $operation));
   drupal_flush_all_caches();
 }
