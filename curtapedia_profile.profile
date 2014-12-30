@@ -55,6 +55,7 @@ function _curtapedia_profile_user_settings_install() {
     }
   } else {
     drupal_set_message("Couldn't load includes/curtapedia_profile.permisssions.inc",  'error');
+    exit();
   }
   
   $operations[] = array('_curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
