@@ -81,12 +81,11 @@ function _curtapedia_profile_install_additional_modules() {
     }
   }
   $modules = array_unique($modules);
-  foreach ($modules as $module) {
+  $modules_sorted = array();
+  foreach ($modules as $module => $weight) {
     $modules_sorted[$module] = $files[$module]->sort;
   }
   arsort($modules_sorted);
-
-  $operations = array();
 
   foreach ($modules_sorted as $module) {
     $operations[] = array('_curtapedia_profile_enable_module', array($module, $files[$module]->info['name']));
