@@ -1,12 +1,11 @@
 <?php
-
 /**
- * Callbacks used when installing the profile.
+ * Callbacks used when installing the profile
  * 
  * @author cblumer88
  * @copyright 2014 Curtis Blumer
  * @license http://www.gnu.org/licenses/gpl-3.0.html
- * @version 7.x-1.x
+ * @version 1.0
  */
 
 /**
@@ -29,14 +28,12 @@ function _curtapedia_profile_enable_module($module, $module_name, &$context) {
  * 
  * This function only exists so that it may report back to the Batch API.
  * 
- * @todo remove $operation parameter
- * 
  * @param string $operation Text used to explain what is happeneing.
  * @param object $context The Batch API context.
  * 
  * @return void 
  */
-function _curtapedia_profile_flush_caches($operation, &$context) {
-  $context['message'] = t('@operation', array('@operation' => $operation));
+function _curtapedia_profile_flush_caches(&$context) {
+  $context['message'] = t("Flushing website caches.");
   drupal_flush_all_caches();
 }
