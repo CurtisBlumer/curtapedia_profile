@@ -23,9 +23,9 @@ function _curtapedia_profile_user_settings_roles_define() {
  * 
  * @return array
  */
-function _curtapedia_profile_user_settings_permissions_define($drupal_role) {
-  if(is_string($drupal_role)) {
-    switch ($drupal_role) {
+function _curtapedia_profile_user_settings_permissions_define($role_name) {
+  if(is_string($role_name)) {
+    switch ($role_name) {
       case 'Contributor':
         $permissions[] = 'access content';
         $permissions[] = 'view own unpublished content';
@@ -79,35 +79,53 @@ function _curtapedia_profile_user_settings_permissions_define($drupal_role) {
  * Creates a stdClass() object and uses passed information to install a role's
  * permissions as defined by _curtapedia_profile_user_settings_install_permissions().
  * 
- * @param string $drupal_role The name of the Drupal role
+ * @param string $role_name The name of the Drupal role
  * @param int $role_weight The weight of the Drupal role; larger weights sink, smaller weights float.
  * 
  * @return bool
  */
-function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight = 0, &$context) {
-  drupal_set_message(__FUNCTION__ . '::$drupal_role = ' . '(' . gettype($drupal_role) . ')' . $drupal_role, 'info', FALSE);
+function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 0, &$context) {
   drupal_set_message(__FUNCTION__ . '::$role_weight = ' . '(' . gettype($role_weight) . ')' . $role_weight, 'info', FALSE);
-  //if(is_string($drupal_role) && is_int($role_weight)) {
+  if(is_string($role_name) && is_int($role_weight)) {
     $role = new stdClass();
-    $role->name = $drupal_role;
+    $role->name = $role_name;
     $role->weight = $role_weight;
     user_role_save($role);
-    $context['message'] = st('Created the @role role.', array('@role' => $drupal_role));
+    $context['message'] = st('Created the @role role.', array('@role' => $role_name));
     
     if(function_exists('_curtapedia_profile_user_settings_permissions_define')) {
-      $role_permissions = _curtapedia_profile_user_settings_permissions_define($role);
+      $role_permissions = _curtapedia_profile_user_settings_permissions_define($role_name);
       user_role_grant_permissions($role->rid, $role_permissions);
-      $context['message'] = st('Granted permissions for the @role role.', array('@role' => $drupal_role));
+      $context['message'] = st('Granted permissions for the @role role.', array('@role' => $role_name));
     } else {
       drupal_set_message("Function: '_curtapedia_profile_user_settings_permissions_define' does not exist",  'info');
     }
-  //}
+  } else {
+    if(!is_string($role_name)) {
+      $replacements = array(
+        '@function' => __FUNCTION__,
+        '@param_name'=> '$role_name',
+        '@param_value' => $role_name,
+        '@param_type_needed' => 'string',
+        '@param_type_passed' => gettype($role_name),
+      );
+      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+    }
+    if(!is_int($role_weight)) {
+      $replacements = array(
+        '@function' => __FUNCTION__,
+        '@param_name'=> '$role_weight',
+        '@param_value' => $role_weight,
+        '@param_type_needed' => 'integer',
+        '@param_type_passed' => gettype($role_weight),
+      );
+      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+    }
+  }
 }
 
 function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
-  drupal_set_message(__FUNCTION__ . '::$user_id = ' . '(' . gettype($user_id) . ')' . $user_id, 'info', FALSE);
-  drupal_set_message(__FUNCTION__ . '::$role_id = ' . '(' . gettype($role_id) . ')' . $role_id, 'info', FALSE);
-  //if(is_int($user_id) & is_int($role_id)) {
+  if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
       ->fields(
         array(
@@ -120,7 +138,28 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
       $role_object = user_role_load($role_id);
       $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
     }
-  //}
+  } else {
+    if(!is_int($user_id)) {
+      $replacements = array(
+        '@function' => __FUNCTION__,
+        '@param_name'=> '$user_id',
+        '@param_value' => $user_id,
+        '@param_type_needed' => 'string',
+        '@param_type_passed' => gettype($user_id),
+      );
+      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+    }
+    if(!is_int($role_id)) {
+      $replacements = array(
+        '@function' => __FUNCTION__,
+        '@param_name'=> '$role_id',
+        '@param_value' => $role_id,
+        '@param_type_needed' => 'integer',
+        '@param_type_passed' => gettype($role_id),
+      );
+      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+    }
+  }
 }
 
 /*
@@ -143,6 +182,9 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   // Save role object to database and get role ID.
   user_role_save($role);  
   $role_id = $role->rid;
+  
+  // Set $role_id to integar to ensure functionality.
+  // Other custom functions have conditionals to ensure data consistency.
   settype($role_id, "integer");
   
   // Notify Batch API of progess (this is for the end user).
