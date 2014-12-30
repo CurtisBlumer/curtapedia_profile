@@ -29,39 +29,25 @@
  * 
  * @todo Move permission configuration into install task.
 */
-function _curtapedia_profile_user_roles_admininstrator_role_define() {
-  $administrator_role['role'] = new stdClass();
-  $administrator_role['role']->name = 'Site Architect';
-  $administrator_role['role']->weight = 50;
-  $administrator_role['permissions'] = array_keys(module_invoke_all('permission'));
+function _curtapedia_profile_user_settings_install_adminin_role() {
+  $admin_role['role'] = new stdClass();
+  $admin_role['role']->name = 'Super administrator';
+  $admin_role['role']->weight = 50;
+  $admin_role['permissions'] = array_keys(module_invoke_all('permission'));
   
-  return $administrator_role;
-}
-
-/*
- * Save Drupal Administrator Role into the datatbase
- * 
- * Saves the Drupal Administrator Role into the database, assigns complete set 
- * of permissions, and assignes User 1 to that role.
- * 
- * @param array $administrator_role
- * 
- * @todo Move permission configuration into install task.
- */
-function _curtapedia_profile_user_roles_admininstrator_role_save(array &$administrator_role) {
-  user_role_save($administrator_role['role']);
-  user_role_grant_permissions($administrator_role['role']->rid, $administrator_role['permissions']);
+  user_role_save($admin_role['role']);
+  user_role_grant_permissions($admin_role['role']->rid, $admin_role['permissions']);
 
   //Assign User 1 the Drupal Administrator Role.
-  db_insert('users_roles')
-    ->fields(array(
+  db_insert('users_roles')->fields(
+    array(
       'uid' => 1,
-      'rid' => $administrator_role['role']->rid,
-      ))
-    ->execute();
+      'rid' => $admin_role['role']->rid,
+    )
+  )->execute();
   
   // Set the role in the Variables table
-  variable_set('user_admin_role', $administrator_role['role']->rid);
+  variable_set('user_admin_role', $admin_role['role']->rid);
 }
 
 /* Define other Drupal user roles
@@ -75,7 +61,6 @@ function _curtapedia_profile_user_roles_admininstrator_role_save(array &$adminis
  * @todo Move permission configuration into install task.
 */
 function _curtapedia_profile_user_roles_define() {
-  $user_roles = array();
   $user_roles['site administrator']['role'] = new stdClass();
   $user_roles['site administrator']['role']->name = 'Site Administrator';
   $user_roles['site administrator']['role']->weight = 49;
@@ -135,19 +120,100 @@ function _curtapedia_profile_user_roles_define() {
     'edit own page content',
     'access user profiles',
   );
-  return (array)$user_roles;
-}
 
-/*
- * Save Drupal user roles into the datatbase
- * 
- * Saves other Drupal user roles and permissions into the database.
- * 
- * @todo Move permission configuration into install task.
- */
-function _curtapedia_profile_user_roles_save(array &$user_roles) {
   foreach($user_roles as $user_role) {
     user_role_save($user_role['role']);
     user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
   }
+}
+
+/*
+ * Save Drupal Role into the database
+ * 
+ * Creates a stdClass() object and uses passed information to install a role's
+ * permissions as defined by _curtapedia_profile_user_settings_install_permissions().
+ * 
+ * @param string $drupal_role The name of the Drupal role
+ * @param int $role_weight The weight of the Drupal role; larger weights sink, smaller weights float.
+ * 
+ * @return bool
+ */
+function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight = 0, &$context) {
+  if(is_string($drupal_role) && is_int($role_weight)) {
+    $role = new stdClass();
+    $role->name = $drupal_role;
+    $role->weight = $role_weight;
+    user_role_save($role);
+    $context['message'] = t('Created the @role role.', array('@role' => $drupal_role));
+    
+    if(is_object($role) && is_callable('_curtapedia_profile_user_settings_install_permissions')) {
+      $role_permissions = _curtapedia_profile_user_settings_permissions_define($role);
+      user_role_grant_permissions($role->rid, $role_permissions);
+      $context['message'] = t('Granted permissions for the @role role.', array('@role' => $drupal_role));
+    }
+  }
+}
+
+function _curtapedia_profile_user_settings_roles_define() {
+  $roles[] = "Administrator";
+  $roles[] = "Editor";
+  $roles[] = "Author";
+  $roles[] = "Contributor";
+  return $roles;
+}
+
+function _curtapedia_profile_user_settings_permissions_define($drupal_role) {
+  if(is_string($drupal_role)) {
+    switch ($drupal_role) {
+      case 'Contributor':
+        $permissions[] = 'access content';
+        $permissions[] = 'view own unpublished content';
+        $permissions[] = 'view revisions';
+        $permissions[] = 'create page content';
+        $permissions[] = 'edit own page content';
+        $permissions[] = 'access user profiles';
+        break;
+      case 'Author':
+        $permissions[] = 'access navbar';
+        $permissions[] = 'access content';
+        $permissions[] = 'access content overview';
+        $permissions[] = 'view own unpublished content';
+        $permissions[] = 'view revisions';
+        $permissions[] = 'create page content';
+        $permissions[] = 'edit own page content';
+        $permissions[] = 'access user profiles';
+        break;
+      case 'Editor':
+        $permissions[] = 'access navbar';
+        $permissions[] = 'access content';
+        $permissions[] = 'access content overview';
+        $permissions[] = 'view own unpublished content';
+        $permissions[] = 'view revisions';
+        $permissions[] = 'revert revisions';
+        $permissions[] = 'create page content';
+        $permissions[] = 'edit any page content';
+        $permissions[] = 'access user profiles';
+        break;
+      case 'Administrator':
+        $permissions[] = 'administer blocks';
+        $permissions[] = 'view revisions';
+        $permissions[] = 'revert revisions';
+        $permissions[] = 'delete revisions';
+        $permissions[] = 'create page content';
+        $permissions[] = 'edit any page content';
+        $permissions[] = 'delete any page content';
+        $permissions[] = 'access user profiles';
+        $permissions[] = 'administer themes';
+        $permissions[] = 'access administration pages';
+        $permissions[] = 'access site in maintenance mode';
+        break;
+    }
+    return $permissions;
+  } else {
+    return FALSE;
+  }
+}
+function _curtapedia_profile_user_settings_flush_caches($operation, &$context) {
+  $context['message'] = t('Flushed all caches.');
+  drupal_flush_all_caches();
 }

@@ -32,22 +32,43 @@ function curtapedia_profile_install_tasks() {
     'type' => 'batch',
     'function' => '_curtapedia_profile_install_additional_modules'
   );
+  $tasks['curtapedia_profile_user_settings_install'] = array(
+    'display_name' => st('Setting up roles and permissions'),
+    'type' => 'batch',
+    'function' => '_curtapedia_profile_user_settings_install'
+  );
   return $tasks;
 }
 
+function _curtapedia_profile_user_settings_install() {
+  module_load_include(inc, curtapedia_profile, includes/curtapedia_profile.permissions);
+  $drupal_roles = _curtapedia_profile_user_settings_roles_define();
+  $default_weight = 50;
+  foreach($drupal_roles as $index => $role) {
+    $weight = $default_weight - $index;
+    $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
+  }
+  $operations[] = array('curtapedia_profile_user_settings_flush_caches');
+
+  $batch = array(
+    'title' => t('Setting up default user roles and permissions'),
+    'operations' => $operations,
+    'file' => drupal_get_path('profile', 'curtapedia_profile') . '/includes/curtapedia_profile.permissions.inc',
+  );
+
+  return $batch;
+}
+
 function _curtapedia_profile_install_additional_modules() {
-  global $install_state;
- 
   $modules[] = "curtapedia_d8";
   // Resolve the dependencies now, so that module_enable() doesn't need
   // to do it later for each individual module (which kills performance).
   $files = system_rebuild_module_data();
-  $modules_sorted = array();
   foreach ($modules as $module) {
     if ($files[$module]->requires) {
       // Create a list of dependencies that haven't been installed yet.
-      $dependencies = array_keys($files[$module]->requires);
-      $dependencies = array_filter($dependencies, '_curtapedia_profile_filter_dependencies');
+      $module_requires = array_keys($files[$module]->requires);
+      $dependencies = array_filter($module_requires, '_curtapedia_profile_filter_dependencies');
       // Add them to the module list.
       $modules = array_merge($modules, $dependencies);
     }
@@ -60,7 +81,7 @@ function _curtapedia_profile_install_additional_modules() {
 
   $operations = array();
 
-  foreach ($modules_sorted as $module => $weight) {
+  foreach ($modules_sorted as $module) {
     $operations[] = array('_curtapedia_profile_enable_module', array($module, $files[$module]->info['name']));
   }
   
