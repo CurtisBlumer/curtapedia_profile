@@ -41,16 +41,11 @@ function curtapedia_profile_install_tasks() {
 }
 
 function _curtapedia_profile_user_settings_install() {
-  // Load permissions include file.
-  //module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
-  _curtapedia_profile_load_include('inc', 'includes/curtapedia_profile.permissions');
-
-  
   // Create admin role.
   $operations[] = array('_curtapedia_profile_user_settings_role_admin_create', array());
- 
-  if(function_exists('_curtapedia_profile_user_settings_roles_define')) {
-    // Get pre-defined roles.
+  
+// Load permissions include file.
+  if(_curtapedia_profile_load_include('inc', 'includes/curtapedia_profile.permissions')) {
     $roles = _curtapedia_profile_user_settings_roles_define();
 
     // Loop through roles and find default permissions.
@@ -59,7 +54,7 @@ function _curtapedia_profile_user_settings_install() {
       $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
     }
   } else {
-    drupal_set_message("Function: '_curtapedia_profile_user_settings_roles_define' does not exist",  'info');
+    drupal_set_message("Couldn't load includes/curtapedia_profile.permisssions.inc",  'error');
   }
   
   $operations[] = array('curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
@@ -118,6 +113,7 @@ function _curtapedia_profile_filter_dependencies($dependency) {
 function _curtapedia_profile_load_include($type, $name) {
   if (function_exists('drupal_get_path')) {
     $file = DRUPAL_ROOT . '/' . drupal_get_path('profile', 'curtapedia_profile') . "/$name.$type";
+    drupal_set_message($file, 'notice');
     if (is_file($file)) {
       require_once $file;
       return $file;

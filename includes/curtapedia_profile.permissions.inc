@@ -143,7 +143,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   // Save role object to database and get role ID.
   user_role_save($role);  
   $role_id = $role->rid;
-  settype($role_id, "integar");
+  settype($role_id, "integer");
   
   // Notify Batch API of progess (this is for the end user).
   $context['message'] = st('Created the @role role.', array('@role' => SUPER_ADMIN_ROLE));
