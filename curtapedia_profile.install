@@ -110,8 +110,8 @@ function curtapedia_profile_install() {
     'view own unpublished content',
     'view revisions',
     'revert revisions',
-    'create any page',
-    'edit any page',
+    //'create any page',
+    //'edit any page',
     'access user profiles',
   );
 
