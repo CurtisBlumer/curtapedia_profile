@@ -46,14 +46,6 @@ function curtapedia_profile_install() {
   // Create RDF mappings for Node types
   $rdf_mappings = _curtapedia_profile_node_types_rdf_mapping_define();
   _curtapedia_profile_node_types_rdf_mapping_save($rdf_mappings);
-
-  // Create Drupal Administrator Role
-  $administrator_role = _curtapedia_profile_user_roles_admininstrator_role_define();
-  _curtapedia_profile_user_roles_admininstrator_role_save($administrator_role);
-
-  // Create user roles with default WordPress role/permission parity
-  $user_roles = _curtapedia_profile_user_roles_define();
-  _curtapedia_profile_user_roles_define($user_roles);
 }
 
 function _curtapedia_profile_text_formats_define() {
