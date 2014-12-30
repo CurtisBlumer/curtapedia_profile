@@ -85,8 +85,8 @@ function _curtapedia_profile_user_settings_permissions_define($drupal_role) {
  * @return bool
  */
 function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight = 0, &$context) {
-  drupal_set_message(gettype($drupal_role), 'info', FALSE);
-  drupal_set_message(gettype($role_weight), 'info', FALSE);
+  drupal_set_message(__FUNCTION__ . '::$drupal_role = ' . '(' . gettype($drupal_role) . ')' . $drupal_role, 'info', FALSE);
+  drupal_set_message(__FUNCTION__ . '::$role_weight = ' . '(' . gettype($role_weight) . ')' . $role_weight, 'info', FALSE);
   //if(is_string($drupal_role) && is_int($role_weight)) {
     $role = new stdClass();
     $role->name = $drupal_role;
@@ -105,8 +105,8 @@ function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight 
 }
 
 function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
-  drupal_set_message(gettype($user_id), 'info', FALSE);
-  drupal_set_message(gettype($role_id), 'info', FALSE);
+  drupal_set_message(__FUNCTION__ . '::$user_id = ' . '(' . gettype($user_id) . ')' . $user_id, 'info', FALSE);
+  drupal_set_message(__FUNCTION__ . '::$role_id = ' . '(' . gettype($role_id) . ')' . $role_id, 'info', FALSE);
   //if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
       ->fields(
@@ -143,6 +143,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   // Save role object to database and get role ID.
   user_role_save($role);  
   $role_id = $role->rid;
+  settype($role_id, "integar");
   
   // Notify Batch API of progess (this is for the end user).
   $context['message'] = st('Created the @role role.', array('@role' => SUPER_ADMIN_ROLE));
@@ -167,6 +168,6 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
  * This function only exists so that it may report back to the Batch API.
  */
 function _curtapedia_profile_flush_caches($operation, &$context) {
-  $context['message'] = st('@operation', array('@operation' => $operation));
   drupal_flush_all_caches();
+  $context['message'] = st('@operation', array('@operation' => $operation));
 }
