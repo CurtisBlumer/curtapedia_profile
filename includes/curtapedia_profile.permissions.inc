@@ -1,15 +1,27 @@
 <?php
 
+/**
+ * @file
+ * Defines and configures default user settings
+ * 
+ * Defines and configures default user roles and permissions as well as provides
+ * callbacks for Batch API for installation tasking.
+ * 
+ * @author Curtis Blumer {@link http://curtapedia.com, Website}
+ * @version 7.x-1.x-dev
+ */
+
+
 define('SUPER_ADMIN_ROLE', 'Super administrator');
 define('SLEEP_TIMER', 2);
 
 /** 
- * Define Drupal user roles
+ * Define default Drupal user roles
  * 
  * Defines default Drupal 7 roles that parity WordPress roles. Roles must be 
  * defined after all modules are enabled oo that permssions may be assigned once.
  * 
- * @return array
+ * @return string[] Array of pre-defined roles.
  */
 function _curtapedia_profile_user_settings_roles_define() {
   $roles[] = "Administrator";
@@ -20,9 +32,13 @@ function _curtapedia_profile_user_settings_roles_define() {
 }
 
 /** 
- * Define Drupal user permissions
+ * Define default Drupal role permission
  * 
- * @return array
+ * Defines default Drupal 7 roles permissions that parity WordPress roles.
+ * Permissions must be defined after all modules are enabled and roles are
+ * installed so that permssions may be assigned only once.
+ * 
+ * @return string[] Array of pre-defined permissions.
  */
 function _curtapedia_profile_user_settings_permissions_define($role_name = NULL) {
   if(is_string($role_name)) {
@@ -82,8 +98,9 @@ function _curtapedia_profile_user_settings_permissions_define($role_name = NULL)
  * 
  * @param string $role_name The name of the Drupal role
  * @param int $role_weight The weight of the Drupal role; larger weights sink, smaller weights float.
+ * @param object $context The Batch API context
  * 
- * @return bool
+ * @return void
  */
 function _curtapedia_profile_user_settings_role_save($role_name = NULL, $role_weight = NULL, &$context) {
   // Type checking parameters because PHP doesn't have type hinting.
@@ -127,6 +144,18 @@ function _curtapedia_profile_user_settings_role_save($role_name = NULL, $role_we
   }
 }
 
+/**
+ * Save Drupal Role into the database
+ * 
+ * Creates a stdClass() object and uses passed information to install a role's
+ * permissions as defined by _curtapedia_profile_user_settings_install_permissions().
+ * 
+ * @param int $user_id The User ID of the user being added to a Role.
+ * @param int $role_id The Role ID of that Role.
+ * @param object $context The Batch API context
+ * 
+ * @return void 
+ */
 function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
   if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
@@ -169,16 +198,16 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
   }
 }
 
-/*
+/**
  * Define the Drupal Site Administrator role.
  * 
  * In Drupal the the Administrator Role is a bit of a misnomer given the average
  * site admin should not be able to access some of Drupal's advanced settings.
  * This should be called before '_curtapedia_profile_user_roles_define()'.
  * 
- * @return array
+ * @param object $context The Batch API context
  * 
- * @todo Move permission configuration into install task.
+ * @return void
 */
 function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   // Instantiate a new role object.
@@ -196,7 +225,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   
   // Notify Batch API of progess (this is for the end user).
   $context['message'] = t('Created @role role.', array('@role' => SUPER_ADMIN_ROLE));
-  sleep(SLEEP_TIMER);;
+  sleep(SLEEP_TIMER);
 
   // Set the 'Super administrator' as the admin role in the {variables} table
   variable_set('user_admin_role', $role_id);
@@ -207,16 +236,21 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   
   // Notify Batch API of progress (this is for the end user).
   $context['message'] = t('Granted all permissions to @role role.', array('@role' => SUPER_ADMIN_ROLE));
-  sleep(SLEEP_TIMER);;
+  sleep(SLEEP_TIMER);
 
   // Add Drupal super user (UID: 1) to 'Super administrator' role.
   _curtapedia_profile_user_settings_role_add_user(1, $role_id);
 }
 
-/*
+/**
  * Simple cache clearing helping function.
  * 
  * This function only exists so that it may report back to the Batch API.
+ * 
+ * @param string $operation
+ * @param object $context The Batch API context
+ * 
+ * @return void 
  */
 function _curtapedia_profile_user_settings_flush_cache($operation, &$context) {
   $context['message'] = t('@operation', array('@operation' => $operation));
