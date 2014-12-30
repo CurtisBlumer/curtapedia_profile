@@ -15,7 +15,9 @@
  * @param string $module_name Module name.
  * @param object $context The Batch API context.
  * 
- * @see curtapedia_profile_install_additional_modules()
+ * @see _curtapedia_profile_install_additional_modules()
+ * 
+ * @uses module_enable() Drupal API function to enable modules
  * 
  * @return void
  */
@@ -28,8 +30,9 @@ function _curtapedia_profile_enable_module($module, $module_name, &$context) {
  * 
  * This function only exists so that it may report back to the Batch API.
  * 
- * @param string $operation Text used to explain what is happeneing.
  * @param object $context The Batch API context.
+ * 
+ * @uses drupal_flush_all_caches() Drupal API function to flush all caches
  * 
  * @return void 
  */

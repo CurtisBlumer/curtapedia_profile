@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Defines and configures default user settings
  * 
@@ -9,12 +8,17 @@
  * @author cblumer88
  * @copyright 2014 Curtis Blumer
  * @license http://www.gnu.org/licenses/gpl-3.0.html
- * @version 7.x-1.x
- * @package curtapedia_profile
+ * @version 1.0
  */
 
-
+/**
+ * @var string SUPER_ADMIN_ROLE Drupal 'Site administrtor' role.
+ */
 define('SUPER_ADMIN_ROLE', 'Super administrator');
+
+/**
+ * @var string SLEP_TIME This is or testing.
+ */
 define('SLEEP_TIMER', 2);
 
 /** 
@@ -108,7 +112,7 @@ function _curtapedia_profile_user_settings_permissions_define($role_name = NULL)
  * @param int $role_weight The weight of the Drupal role; larger weights sink, smaller weights float.
  * @param object $context The Batch API context.
  * 
- * @uses user_role_grant_permissions To set permissions in the database.
+ * @uses user_role_grant_permissions() To set permissions in the database.
  * 
  * @return void
  */
@@ -164,8 +168,8 @@ function _curtapedia_profile_user_settings_role_save($role_name = NULL, $role_we
  * @param int $role_id The Role ID of that Role.
  * @param object $context The Batch API context
  * 
- * @uses db_insert Inserts data into the database
- * @uses drupal_set_message To report erros in type hinting.
+ * @uses db_insert() Inserts data into the database
+ * @uses drupal_set_message() To report erros in type hinting.
  * 
  * @return void 
  */
@@ -220,7 +224,7 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
  * 
  * @param object $context The Batch API context
  * 
- * @uses _curtapedia_profile_user_settings_role_add_user to add users to roles.
+ * @uses _curtapedia_profile_user_settings_role_add_user() to add users to roles.
  * 
  * @return void
 */

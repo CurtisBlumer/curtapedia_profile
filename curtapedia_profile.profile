@@ -1,12 +1,11 @@
 <?php
-
 /**
- * Enables modules and site configuration for a standard site installation.
+ * Enables modules and site configuration for a standard site installation
  * 
  * @author cblumer88
  * @copyright 2014 Curtis Blumer
  * @license http://www.gnu.org/licenses/gpl-3.0.html
- * @version 7.x-1.x
+ * @version 1.0
  */
 
 /**
@@ -123,7 +122,7 @@ function _curtapedia_profile_install_additional_modules() {
 /**
  * array_filter() callback used to filter out already installed dependencies.
  * 
- * @uses module_exists
+ * @uses module_exists()
  * 
  * @return boolean $dependency
  */

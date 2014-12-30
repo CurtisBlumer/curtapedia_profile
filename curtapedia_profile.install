@@ -1,12 +1,11 @@
 <?php
-
 /**
- * Install, update, and uninstall functions for the Curtapedia installation profile.
+ * Install, update, and uninstall functions for the Curtapedia installation profile
  * 
  * @author cblumer88
  * @copyright 2014 Curtis Blumer
  * @license http://www.gnu.org/licenses/gpl-3.0.html
- * @version 7.x-1.x
+ * @version 1.0
  */
 
 /**
