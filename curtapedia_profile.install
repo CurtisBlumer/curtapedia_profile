@@ -2,10 +2,19 @@
 
 /**
  * @file
- * Install, update and uninstall functions for the Curtapedia installation profile.
+ * Install, update, and uninstall functions for the Curtapedia 
+ * installation profile.
  */
 
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ *
+ * @see system_install()
+ */
 function curtapedia_profile_install() {
+
   // Any themes without keys here will get numeric keys and so will be enabled,
   // but not placed into variables.
   $themes = array(
@@ -24,29 +33,6 @@ function curtapedia_profile_install() {
 
   // Disable the Drupal 7 default theme, Bartik.
   theme_disable(array('bartik'));
-
-  /*
-   * Create a default role for site builders.
-   * 
-   * In Drupal this is called the Administrator Role, but that is a bit of a 
-   * misnomer given the average site admin should not be able to access some of 
-   * Drupal's more advanced settings.
-   */
-  $role_site_builder = new stdClass();
-  $role_site_builder->name = 'Site Architect';
-  $role_site_builder->weight = 50;
-  user_role_save($role_site_builder);
-  user_role_grant_permissions($role_site_builder->rid, array_keys(module_invoke_all('permission')));
-
-  /*
-   * Assign User 1 the 'Site architect' role.
-   */
-  db_insert('users_roles')
-    ->fields(array(
-      'uid' => 1,
-      'rid' => $role_site_builder->rid,
-      ))
-    ->execute();
   
   /*
    * Set the 'Site architect' role as the Drupal 7 'Administrator role'.
@@ -73,18 +59,140 @@ function curtapedia_profile_install() {
    */
   $rdf_mappings = _curtapedia_profile_node_types_rdf_mapping_define();
   _curtapedia_profile_node_types_rdf_mapping_save($rdf_mappings);
+
+  // Create Drupal Administrator Role
+  $administrator_role = _curtapedia_profile_user_roles_admininstrator_role_define();
+  _curtapedia_profile_user_roles_admininstrator_role_save($administrator_role);
+
+  // Create user roles with default WordPress role/permission parity
+  $user_roles = _curtapedia_profile_user_roles_define();
+  _curtapedia_profile_user_roles_define($user_roles);
+
+}
+
+function _curtapedia_profile_text_formats_define() {
+
+  $text_formats['default'] = array(
+    'format' => 'html_default',
+    'name' => 'Default HTML',
+    'weight' => -50,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      // HTML filter.
+      'filter_html' => array(
+        'weight' => 1,
+        'status' => 1,
+      ),
+      // Line break filter.
+      'filter_autop' => array(
+        'weight' => 2,
+        'status' => 1,
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+
+  $text_formats['extended'] = array(
+    'format' => 'html_extended',
+    'name' => 'Extended HTML',
+    'weight' => 1,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      // Line break filter.
+      'filter_autop' => array(
+        'weight' => 1,
+        'status' => 1,
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+
+}
+
+function _curtapedia_profile_text_formats_save(array &$text_formats) {
+
+  foreach($text_formats as $text_format) {
+    $text_format = (object) $text_format;
+    filter_format_save($text_format);
+  }
+
+}
+
+/*
+ * Define the Drupal Site Administrator role.
+ * 
+ * In Drupal the the Administrator Role is a bit of a misnomer given the average
+ * site admin should not be able to access some of Drupal's advanced settings.
+ * This should be called before '_curtapedia_profile_user_roles_define()'.
+ * 
+ * @return array
+ * 
+ * @todo Move permission configuration into install task.
+*/
+function _curtapedia_profile_user_roles_admininstrator_role_define() {
+  $administrator_role['role'] = new stdClass();
+  $administrator_role['role']->name = 'Site Architect';
+  $administrator_role['role']->weight = 50;
+  $administrator_role['permissions'] = array_keys(module_invoke_all('permission'));
   
-    /* Define and create other Drupal 7 roles
-   * 
-   * Defines and creates other Drupal 7 roles, parity with WordPress roles.
-   * Roles must be defined after all the content types are created so that 
-   * permssions may be properly assigned for them.
-   */
-  //$user_roles = _curtapedia_profile_user_roles_define();
-  $user_roles['administrator']['role'] = new stdClass();
-  $user_roles['administrator']['role']->name = 'Site Administrator';
-  $user_roles['administrator']['role']->weight = 49;
-  $user_roles['administrator']['permissions'] = array(
+  return $administrator_role;
+}
+
+/*
+ * Save Drupal Administrator Role into the datatbase
+ * 
+ * Saves the Drupal Administrator Role into the database, assigns complete set 
+ * of permissions, and assignes User 1 to that role.
+ * 
+ * @param array $administrator_role
+ * 
+ * @todo Move permission configuration into install task.
+ */
+function _curtapedia_profile_user_roles_admininstrator_role_save(array &$administrator_role) {
+  user_role_save($administrator_role['role']);
+  user_role_grant_permissions($administrator_role['role'], $administrator_role['permissions']);
+
+  //Assign User 1 the Drupal Administrator Role.
+  db_insert('users_roles')
+    ->fields(array(
+      'uid' => 1,
+      'rid' => $administrator_role['role']->rid,
+      ))
+    ->execute();
+}
+
+/* Define other Drupal user roles
+ * 
+ * Defines other Drupal 7 roles that parity WordPress roles. Roles must be 
+ * defined after all the content types are created so that permssions may be 
+ * properly assigned for them. This should be called last.
+ * 
+ * @return array
+ * 
+ * @todo Move permission configuration into install task.
+*/
+function _curtapedia_profile_user_roles_define() {
+
+  $user_roles['site administrator']['role'] = new stdClass();
+  $user_roles['site administrator']['role']->name = 'Site Administrator';
+  $user_roles['site administrator']['role']->weight = 49;
+  $user_roles['site administrator']['permissions'] = array(
     'administer blocks',
     'access content',
     //'access navbar',
@@ -124,8 +232,8 @@ function curtapedia_profile_install() {
     'access content overview',
     'view own unpublished content',
     'view revisions',
-    //'create own page content',
-    //'edit own page content',
+    'create own page content',
+    'edit own page content',
     'access user profiles',
   );
 
@@ -136,11 +244,21 @@ function curtapedia_profile_install() {
     'access content',
     'view own unpublished content',
     'view revisions',
-    //'create own page content',
-    //'edit own page content',
+    'create own page content',
+    'edit own page content',
     'access user profiles',
   );
+  return $user_roles;
+}
 
+/*
+ * Save Drupal user roles into the datatbase
+ * 
+ * Saves other Drupal user roles and permissions into the database.
+ * 
+ * @todo Move permission configuration into install task.
+ */
+function _curtapedia_profile_user_roles_save(array &$user_roles) { {
   foreach ($user_roles as $user_role) {
     user_role_save($user_role['role']);
     user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
@@ -180,7 +298,29 @@ function _curtapedia_profile_node_types_define() {
       'locked' => 0,
     ),
   );
+
+  /*
+   * Default publishing options for "Basic page".
+   * 
+   * Defaults:
+   * <ul>
+   * <li>Publish
+   * <li>Do not promote
+   * <li>Do not make sticky
+   * <li>Create new revision
+   * </ul>
+   */
+  variable_set('node_options_page', array('status', 'revision'));
+  
+  // Disable comments on 'Basic page'
+  variable_set('comment_page', COMMENT_NODE_HIDDEN);
+
+  // Don't display date and author information for "Basic page" nodes by default.
+  variable_set('node_submitted_page', FALSE);
+  
+  // Return node types array
   return $node_types;
+  
 }
 
 function _curtapedia_profile_node_types_save(array &$node_types) {
@@ -216,74 +356,8 @@ function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
   }
 }
 
-/**
- * @file
- * Install, update and uninstall functions for the standard installation profile.
- */
-
-/**
- * Implements hook_install().
- *
- * Perform actions to set up the site for this profile.
- *
- * @see system_install()
- */
 /*function standard_install() {
-  // Add text formats.
-  $filtered_html_format = array(
-    'format' => 'filtered_html',
-    'name' => 'Filtered HTML',
-    'weight' => 0,
-    'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
-      ),
-      // HTML filter.
-      'filter_html' => array(
-        'weight' => 1,
-        'status' => 1,
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 2,
-        'status' => 1,
-      ),
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-    ),
-  );
-  $filtered_html_format = (object) $filtered_html_format;
-  filter_format_save($filtered_html_format);
 
-  $full_html_format = array(
-    'format' => 'full_html',
-    'name' => 'Full HTML',
-    'weight' => 1,
-    'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 1,
-        'status' => 1,
-      ),
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-    ),
-  );
-  $full_html_format = (object) $full_html_format;
-  filter_format_save($full_html_format);
 
   // Enable some standard blocks.
   $default_theme = variable_get('theme_default', 'bartik');
@@ -446,34 +520,6 @@ function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
     node_add_body_field($type);
   }
 
-  // Insert default pre-defined RDF mapping into the database.
-  $rdf_mappings = array(
-    array(
-      'type' => 'node',
-      'bundle' => 'page',
-      'mapping' => array(
-        'rdftype' => array('foaf:Document'),
-      ),
-    ),
-    array(
-      'type' => 'node',
-      'bundle' => 'article',
-      'mapping' => array(
-        'field_image' => array(
-          'predicates' => array('og:image', 'rdfs:seeAlso'),
-          'type' => 'rel',
-        ),
-        'field_tags' => array(
-          'predicates' => array('dc:subject'),
-          'type' => 'rel',
-        ),
-      ),
-    ),
-  );
-  foreach ($rdf_mappings as $rdf_mapping) {
-    rdf_mapping_save($rdf_mapping);
-  }
-
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
@@ -604,7 +650,6 @@ function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
         'settings' => array('image_style' => 'medium', 'image_link' => 'content'),
         'weight' => -1,
       ),
-    ),
   );
   field_create_instance($instance);
 
@@ -612,38 +657,4 @@ function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
   $filtered_html_permission = filter_permission_name($filtered_html_format);
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access comments', $filtered_html_permission));
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access comments', 'post comments', 'skip comment approval', $filtered_html_permission));
-
-  // Create a default role for site administrators, with all available permissions assigned.
-  $admin_role = new stdClass();
-  $admin_role->name = 'administrator';
-  $admin_role->weight = 2;
-  user_role_save($admin_role);
-  user_role_grant_permissions($admin_role->rid, array_keys(module_invoke_all('permission')));
-  // Set this as the administrator role.
-  variable_set('user_admin_role', $admin_role->rid);
-
-  // Assign user 1 the "administrator" role.
-  db_insert('users_roles')
-    ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
-    ->execute();
-
-  // Create a Home link in the main menu.
-  $item = array(
-    'link_title' => st('Home'),
-    'link_path' => '<front>',
-    'menu_name' => 'main-menu',
-  );
-  menu_link_save($item);
-
-  // Update the menu router information.
-  menu_rebuild();
-
-  // Enable the admin theme.
-  db_update('system')
-    ->fields(array('status' => 1))
-    ->condition('type', 'theme')
-    ->condition('name', 'seven')
-    ->execute();
-  variable_set('admin_theme', 'seven');
-  variable_set('node_admin_theme', '1');
 }*/
