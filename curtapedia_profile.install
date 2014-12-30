@@ -7,9 +7,10 @@
  * @author cblumer88
  * @copyright (c) 2014, Curtis Blumer
  * @version 7.x-1.x-dev
+ * @package curtapedia_profile
  */
 
-namespace Drupal\curtapedia_profile;
+//namespace Drupal\curtapedia_profile;
 
 /**
  * Implements hook_install().
