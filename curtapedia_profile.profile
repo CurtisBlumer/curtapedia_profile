@@ -42,19 +42,22 @@ function curtapedia_profile_install_tasks() {
 
 function _curtapedia_profile_user_settings_install() {
   // Load permissions include file.
-  module_load_include(inc, curtapedia_profile, includes/curtapedia_profile.permissions);
+  module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
   
   // Create admin role.
-  _curtapedia_profile_user_settings_role_admin_create();
-  
-  // Get pre-defined roles.
-  $drupal_roles = _curtapedia_profile_user_settings_roles_define();
-  
-  // Loop through roles and find default permissions.
-  foreach($drupal_roles as $index => $role) {
-    $weight = 10 - $index; // Fixes weighting problem with ordering by most powerful account.
-    $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
+  $operations[] = array(_curtapedia_profile_user_settings_role_admin_create);
+ 
+  if(function_exists('_curtapedia_profile_user_settings_roles_define')) {
+    // Get pre-defined roles.
+    $roles = _curtapedia_profile_user_settings_roles_define();
+
+    // Loop through roles and find default permissions.
+    foreach($roles as $index => $role) {
+      $weight = 10 - $index; // Fixes weighting problem with ordering by most powerful account.
+      $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
+    }
   }
+  
   $operations[] = array('curtapedia_profile_user_settings_flush_caches');
 
   $batch = array(
@@ -82,7 +85,7 @@ function _curtapedia_profile_install_additional_modules() {
   }
   $modules = array_unique($modules);
   $modules_sorted = array();
-  foreach ($modules as $module => $weight) {
+  foreach ($modules as $weight => $module) {
     $modules_sorted[$module] = $files[$module]->sort;
   }
   arsort($modules_sorted);
@@ -107,4 +110,15 @@ function _curtapedia_profile_install_additional_modules() {
  */
 function _curtapedia_profile_filter_dependencies($dependency) {
   return !module_exists($dependency);
+}
+
+function _curtapedia_profile_file_include($type, $name) {
+  if (function_exists('drupal_get_path')) {
+    $file = DRUPAL_ROOT . '/' . drupal_get_path('profile', 'curtapedia_profile') . "/$name.$type";
+    if (is_file($file)) {
+      require_once $file;
+      return $file;
+    }
+  }
+  return FALSE;
 }
