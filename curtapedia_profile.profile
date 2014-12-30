@@ -42,7 +42,9 @@ function curtapedia_profile_install_tasks() {
 
 function _curtapedia_profile_user_settings_install() {
   // Load permissions include file.
-  module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
+  //module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
+  _curtapedia_profile_load_include('inc', 'includes/curtapedia_profile.permissions');
+
   
   // Create admin role.
   $operations[] = array('_curtapedia_profile_user_settings_role_admin_create', array());
@@ -113,7 +115,7 @@ function _curtapedia_profile_filter_dependencies($dependency) {
   return !module_exists($dependency);
 }
 
-function _curtapedia_profile_file_include($type, $name) {
+function _curtapedia_profile_load_include($type, $name) {
   if (function_exists('drupal_get_path')) {
     $file = DRUPAL_ROOT . '/' . drupal_get_path('profile', 'curtapedia_profile') . "/$name.$type";
     if (is_file($file)) {
