@@ -14,14 +14,15 @@
  * Allows the profile to alter the site configuration form.
  */
 function curtapedia_profile_form_install_configure_form_alter(&$form, $form_state) {
+  $server_name = filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_SANITIZE_URL);
   // Pre-populate the site name with the server name.
-  $form['site_information']['site_name']['#default_value'] = $_SERVER['SERVER_NAME'];
-  $form['site_information']['site_mail']['#default_value'] = 'do-not-reply@' . $_SERVER['SERVER_NAME'];
+  $form['site_information']['site_name']['#default_value'] = $server_name;
+  $form['site_information']['site_mail']['#default_value'] = 'do-not-reply@' . $server_name;
   $form['server_settings']['site_default_country']['#default_value'] = 'US';
   $form['update_notifications']['update_status_module'][2]['#default_value'] = 0;
-  if ($_SERVER['SERVER_NAME'] == 'dev.curtapedia.com') {
+  if ($server_name == 'dev.curtapedia.com') {
     $form['admin_account']['account']['name']['#default_value'] = 'root';
-    $form['admin_account']['account']['mail']['#default_value'] = 'do-not-reply@' . $_SERVER['SERVER_NAME'];
+    $form['admin_account']['account']['mail']['#default_value'] = 'do-not-reply@' . $server_name;
   }
 }
 
