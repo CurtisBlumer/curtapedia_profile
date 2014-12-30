@@ -123,7 +123,7 @@ function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 
   }
 }
 
-function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
+function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$context) {
   if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
       ->fields(
@@ -132,12 +132,10 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
           'rid' => $role_id,
         )
       )->execute();
-    if(is_int($query)) {
-      $user_object = user_load($user_id);
-      $role_object = user_role_load($role_id);
-      $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
-      sleep(SLEEP_TIMER);;
-    }
+    $user_object = user_load($user_id);
+    $role_object = user_role_load($role_id);
+    $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
+    sleep(SLEEP_TIMER);
   } else {
     if(!is_int($user_id)) {
       $replacements = array(

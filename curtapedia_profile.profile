@@ -57,7 +57,7 @@ function _curtapedia_profile_user_settings_install() {
     drupal_set_message("Couldn't load includes/curtapedia_profile.permisssions.inc",  'error');
   }
   
-  $operations[] = array('curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
+  $operations[] = array('_curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
 
   $batch = array(
     'title' => t('Setting up default user roles and permissions'),
