@@ -1,12 +1,12 @@
 <?php
+
 /**
- * @file
- * Install, update, and uninstall functions for the Curtapedia 
- * installation profile.
+ * Install, update, and uninstall functions for the Curtapedia installation profile.
  * 
  * @author cblumer88
- * @copyright (c) 2014, Curtis Blumer
- * @version 7.x-1.x-dev
+ * @copyright 2014 Curtis Blumer
+ * @license http://www.gnu.org/licenses/gpl-3.0.html
+ * @version 7.x-1.x
  */
 
 /**
@@ -15,6 +15,10 @@
  * Perform actions to set up the site for this profile.
  *
  * @see system_install()
+ * 
+ * @uses hook_install()
+ * 
+ * @return void
  */
 function curtapedia_profile_install() {
   module_load_include('inc', 'curtapedia._profile', 'includes/curtapedia._profile.permissions');
@@ -48,6 +52,11 @@ function curtapedia_profile_install() {
   _curtapedia_profile_node_types_rdf_mapping_save($rdf_mappings);
 }
 
+/**
+ * Pre-defined Drupal 7 text formats
+ * 
+ * @return array $text_formats Pre-defined Drupal 7 text formats
+ */
 function _curtapedia_profile_text_formats_define() {
   $text_formats['default'] = array(
     'format' => 'html_default',
@@ -98,23 +107,31 @@ function _curtapedia_profile_text_formats_define() {
       ),
     ),
   );
+  return $text_formats;
 }
 
-/*
- * Saves default text formats to database
+/**
+ * Saves default text formats to database.
  * 
  * Saves default text formats defined in _curtapedia_profile_text_formats_define
  * to the database.
  * 
- * @param array $text_formats
+ * @param array $text_formats Default text formats.
+ * 
+ * @return void
  */
-function _curtapedia_profile_text_formats_save(array &$text_formats) {
+function _curtapedia_profile_text_formats_save(array $text_formats) {
   foreach($text_formats as $text_format) {
     //$text_format = (object) $text_format;
     filter_format_save($text_format);
   }
 }
 
+/**
+ * Defnes default menu links
+ * 
+ * @return array $menu_links
+ */
 function _curtapedia_profile_menu_links_define() {
   $menu_links = array(
     // Create a Home link in the main menu.
@@ -127,22 +144,32 @@ function _curtapedia_profile_menu_links_define() {
   return $menu_links;
 }
 
-function _curtapedia_profile_menu_links_save(array &$menu_links) {
+/**
+ * Saves default menu links to database.
+ * 
+ * @uses _curtapedia_profile_text_formats_define()
+ * 
+ * @param array $menu_links
+ * 
+ * @return void
+ */
+function _curtapedia_profile_menu_links_save(array $menu_links) {
   foreach($menu_links as $menu_link) {
     menu_link_save($menu_link);
   }
   menu_rebuild();
 }
 
-/*
+/**
  * Define default node types
  * 
  * Insert default pre-defined node types into the database. For a complete list
  * of available node type attributes, refer to the node type API documentation
  * at: http://api.drupal.org/api/HEAD/function/hook_node_info.
  * 
- * @return array
  * @todo Write a better long description
+ * 
+ * @return array $node_types
  */
 function _curtapedia_profile_node_types_define() {
   $node_types = array(
@@ -158,13 +185,10 @@ function _curtapedia_profile_node_types_define() {
     ),
   );
 
-  /*
+  /**
    * Default publishing options for "Basic page".
    * 
-   * Defaults are:
-   * <ul>
-   * <li>Publish; <li>Do not promote; <li>Do not make sticky; <li>Create new revision.
-   * </ul>
+   * Defaults are: Publish; Do not promote; Do not make sticky; Create new revision.
    */
   variable_set('node_options_page', array('status', 'revision'));
   
@@ -179,7 +203,12 @@ function _curtapedia_profile_node_types_define() {
   
 }
 
-function _curtapedia_profile_node_types_save(array &$node_types) {
+/**
+ * @param array $node_types
+ * 
+ * @return void
+ */
+function _curtapedia_profile_node_types_save(array $node_types) {
   foreach($node_types as $node_type) {
     $node_type = node_type_set_defaults($node_type);
     node_type_save($node_type);
@@ -187,6 +216,13 @@ function _curtapedia_profile_node_types_save(array &$node_types) {
   }
 }
 
+/**
+ * Define default RDF mappings
+ * 
+ * @todo Write a better long description
+ * 
+ * @return array $node_types
+ */
 function _curtapedia_profile_node_types_rdf_mapping_define() {
   $rdf_mappings = array(
     array(
@@ -206,6 +242,11 @@ function _curtapedia_profile_node_types_rdf_mapping_define() {
   return $rdf_mappings;
 }
 
+/**
+ * @param array $node_types
+ * 
+ * @return void
+ */
 function _curtapedia_profile_node_types_rdf_mapping_save(array &$rdf_mappings) {
   foreach($rdf_mappings as $rdf_mapping) {
     rdf_mapping_save($rdf_mapping);

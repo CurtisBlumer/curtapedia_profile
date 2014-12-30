@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @file
  * Enables modules and site configuration for a standard site installation.
  * 
  * @author cblumer88
- * @copyright (c) 2014, Curtis Blumer
- * @version 7.x-1.x-dev
+ * @copyright 2014 Curtis Blumer
+ * @license http://www.gnu.org/licenses/gpl-3.0.html
+ * @version 7.x-1.x
  */
 
 /**
@@ -26,6 +27,11 @@ function curtapedia_profile_form_install_configure_form_alter(&$form, $form_stat
   }
 }
 
+/**
+ * Create post-configuration install tasks.
+ * 
+ * @return array $tasks
+ */
 function curtapedia_profile_install_tasks() {
   $tasks['curtapedia_profile_module_enable_curtapedia_d8'] = array(
     'display_name' => st('Drupal 8-ifying your site'),
@@ -40,6 +46,11 @@ function curtapedia_profile_install_tasks() {
   return $tasks;
 }
 
+/**
+ * Install default user settings.
+ * 
+ * @return array $batch
+ */
 function _curtapedia_profile_user_settings_install() {
   // Create admin role.
   $operations[] = array('_curtapedia_profile_user_settings_role_admin_create', array());
@@ -69,6 +80,11 @@ function _curtapedia_profile_user_settings_install() {
   return $batch;
 }
 
+/**
+ * Install additional modules.
+ * 
+ * @return array $batch
+ */
 function _curtapedia_profile_install_additional_modules() {
   $modules[] = "curtapedia_d8";
   // Resolve the dependencies now, so that module_enable() doesn't need
@@ -106,11 +122,20 @@ function _curtapedia_profile_install_additional_modules() {
 
 /**
  * array_filter() callback used to filter out already installed dependencies.
+ * 
+ * @uses module_exists
+ * 
+ * @return boolean $dependency
  */
 function _curtapedia_profile_filter_dependencies($dependency) {
   return !module_exists($dependency);
 }
 
+/**
+ * Install additonal modules
+ * 
+ * @return string|boolean $file
+ */
 function _curtapedia_profile_load_include($type, $name) {
   if (function_exists('drupal_get_path')) {
     $file = DRUPAL_ROOT . '/' . drupal_get_path('profile', 'curtapedia_profile') . "/$name.$type";
