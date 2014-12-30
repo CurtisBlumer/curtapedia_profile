@@ -6,17 +6,17 @@ exclusive = TRUE
 
 ; Core dependencies
 dependencies[] = block
-;dependencies[] = comment
-;dependencies[] = contextual
-;dependencies[] = dblog
-;dependencies[] = locale
-;dependencies[] = menu
+dependencies[] = comment
+dependencies[] = contextual
+dependencies[] = dblog
+dependencies[] = locale
+dependencies[] = menu
 dependencies[] = node
-;dependencies[] = path
+dependencies[] = path
 dependencies[] = rdf
-;dependencies[] = search
-;dependencies[] = shortcut
-;dependencies[] = taxonomy
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = taxonomy
 
 ; Contrib dependenices
 dependencies[] = libraries
