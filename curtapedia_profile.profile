@@ -45,7 +45,7 @@ function _curtapedia_profile_user_settings_install() {
   module_load_include('inc', 'curtapedia_profile', 'includes/curtapedia_profile.permissions');
   
   // Create admin role.
-  $operations[] = array(_curtapedia_profile_user_settings_role_admin_create);
+  $operations[] = array('_curtapedia_profile_user_settings_role_admin_create');
  
   if(function_exists('_curtapedia_profile_user_settings_roles_define')) {
     // Get pre-defined roles.
