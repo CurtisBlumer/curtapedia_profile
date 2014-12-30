@@ -110,8 +110,8 @@ function curtapedia_profile_install() {
     'view own unpublished content',
     'view revisions',
     'revert revisions',
-    'create any page content',
-    'edit any page content',
+    'create any page',
+    'edit any page',
     'access user profiles',
   );
 
@@ -124,8 +124,8 @@ function curtapedia_profile_install() {
     'access content overview',
     'view own unpublished content',
     'view revisions',
-    'create own page content',
-    'edit own page content',
+    //'create own page content',
+    //'edit own page content',
     'access user profiles',
   );
 
@@ -136,8 +136,8 @@ function curtapedia_profile_install() {
     'access content',
     'view own unpublished content',
     'view revisions',
-    'create own page content',
-    'edit own page content',
+    //'create own page content',
+    //'edit own page content',
     'access user profiles',
   );
 
