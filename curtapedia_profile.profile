@@ -56,6 +56,8 @@ function _curtapedia_profile_user_settings_install() {
       $weight = 10 - $index; // Fixes weighting problem with ordering by most powerful account.
       $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
     }
+  } else {
+    drupal_set_message("Function: '_curtapedia_profile_user_settings_roles_define' does not exist",  'info');
   }
   
   $operations[] = array('curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));

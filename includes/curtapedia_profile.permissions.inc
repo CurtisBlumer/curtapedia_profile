@@ -85,23 +85,27 @@ function _curtapedia_profile_user_settings_permissions_define($drupal_role) {
  * @return bool
  */
 function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight = 0, &$context) {
-  if(is_string($drupal_role) && is_int($role_weight)) {
+  drupal_set_message(gettype($drupal_role), 'info', FALSE);
+  drupal_set_message(gettype($role_weight), 'info', FALSE);
+  //if(is_string($drupal_role) && is_int($role_weight)) {
     $role = new stdClass();
     $role->name = $drupal_role;
     $role->weight = $role_weight;
     user_role_save($role);
-    $context['message'] = t('Created the @role role.', array('@role' => $drupal_role));
+    $context['message'] = st('Created the @role role.', array('@role' => $drupal_role));
     
     if(is_object($role) && is_callable('_curtapedia_profile_user_settings_install_permissions')) {
       $role_permissions = _curtapedia_profile_user_settings_permissions_define($role);
       user_role_grant_permissions($role->rid, $role_permissions);
-      $context['message'] = t('Granted permissions for the @role role.', array('@role' => $drupal_role));
+      $context['message'] = st('Granted permissions for the @role role.', array('@role' => $drupal_role));
     }
-  }
+  //}
 }
 
 function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
-  if(is_int($user_id) & is_int($role_id)) {
+  drupal_set_message(gettype($user_id), 'info', FALSE);
+  drupal_set_message(gettype($role_id), 'info', FALSE);
+  //if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
       ->fields(
         array(
@@ -112,9 +116,9 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
     if(is_int($query)) {
       $user_object = user_load($user_id);
       $role_object = user_role_load($role_id);
-      $context['message'] = t('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
+      $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
     }
-  }
+  //}
 }
 
 /*
@@ -139,7 +143,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   $role_id = $role->rid;
   
   // Notify Batch API of progess (this is for the end user).
-  $context['message'] = t('Created the @role role.', array('@role' => SUPER_ADMIN_ROLE));
+  $context['message'] = st('Created the @role role.', array('@role' => SUPER_ADMIN_ROLE));
 
   // Set the 'Super administrator' as the admin role in the {variables} table
   variable_set('user_admin_role', $role_id);
@@ -149,7 +153,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   user_role_grant_permissions($role_id, $role_permissions);
   
   // Notify Batch API of progress (this is for the end user).
-  $context['message'] = t('Granted all permissions for the @role role.', array('@role' => SUPER_ADMIN_ROLE));
+  $context['message'] = st('Granted all permissions for the @role role.', array('@role' => SUPER_ADMIN_ROLE));
 
   // Add Drupal super user (UID: 1) to 'Super administrator' role.
   _curtapedia_profile_user_settings_role_add_user(1, $role_id);
@@ -161,6 +165,6 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
  * This function only exists so that it may report back to the Batch API.
  */
 function _curtapedia_profile_flush_caches($operation, &$context) {
-  $context['message'] = t('@operation', array('@operation' => $operation));
+  $context['message'] = st('@operation', array('@operation' => $operation));
   drupal_flush_all_caches();
 }
