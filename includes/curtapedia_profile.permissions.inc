@@ -94,10 +94,12 @@ function _curtapedia_profile_user_settings_role_save($drupal_role, $role_weight 
     user_role_save($role);
     $context['message'] = st('Created the @role role.', array('@role' => $drupal_role));
     
-    if(is_object($role) && is_callable('_curtapedia_profile_user_settings_install_permissions')) {
+    if(function_exists('_curtapedia_profile_user_settings_install_permissions')) {
       $role_permissions = _curtapedia_profile_user_settings_permissions_define($role);
       user_role_grant_permissions($role->rid, $role_permissions);
       $context['message'] = st('Granted permissions for the @role role.', array('@role' => $drupal_role));
+    } else {
+      drupal_set_message("Function: '_curtapedia_profile_user_settings_permissions_define' does not exist",  'info');
     }
   //}
 }
