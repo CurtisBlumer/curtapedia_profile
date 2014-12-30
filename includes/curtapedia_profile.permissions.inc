@@ -97,8 +97,12 @@ function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 
     
     $role_permissions = _curtapedia_profile_user_settings_permissions_define($role_name);
     user_role_grant_permissions($role->rid, $role_permissions);
-    $context['message'] = st('Granted permissions for the @role role.', array('@role' => $role_name));
-    sleep(SLEEP_TIMER);;
+    foreach($role_permissions as $permission) {
+      $context['message'] = st('Granted @permission to @role role.', array('@permission' => $permission, '@role' => $role_name));
+      sleep(SLEEP_TIMER);
+    }
+    //$context['message'] = st('Granted permissions for the @role role.', array('@role' => $role_name));
+    sleep(SLEEP_TIMER);
   } else {
     if(!is_string($role_name)) {
       $replacements = array(
@@ -132,21 +136,14 @@ function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$c
           'rid' => $role_id,
         )
       )->execute();
+    
     $user_object = user_load($user_id);
-    $replacements = array(
-      '@open_tags' => "<pre><code>",
-      '@close_tags' => "</code></pre>",
-      '@var_dump' => var_dump($user_object),
-    );
-    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE);
+    $user_name = $user_object->name;
+    
     $role_object = user_role_load($role_id);
-    $replacements = array(
-      '@open_tags' => "<pre><code>",
-      '@close_tags' => "</code></pre>",
-      '@var_dump' => var_dump($role_object),
-    );
-    drupal_set_message(st("@open_tags @var_dump @close_tags", $replacements), "info", TRUE);
-    $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
+    $role_name = $role_object->name;
+    
+    $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_name, '@role' => $role_name));
     sleep(SLEEP_TIMER);
   } else {
     if(!is_int($user_id)) {
