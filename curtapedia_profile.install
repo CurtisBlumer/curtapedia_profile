@@ -17,6 +17,7 @@
  * @see system_install()
  */
 function curtapedia_profile_install() {
+  module_load_include('inc', 'curtapedia._profile', 'includes/curtapedia._profile.permissions');
   $themes = array(
     'theme_default' => 'responsive_bartik',
     'admin_theme' => 'seven',
@@ -56,7 +57,6 @@ function curtapedia_profile_install() {
 }
 
 function _curtapedia_profile_text_formats_define() {
-
   $text_formats['default'] = array(
     'format' => 'html_default',
     'name' => 'Default HTML',
@@ -84,7 +84,6 @@ function _curtapedia_profile_text_formats_define() {
       ),
     ),
   );
-
   $text_formats['extended'] = array(
     'format' => 'html_extended',
     'name' => 'Extended HTML',
@@ -107,7 +106,6 @@ function _curtapedia_profile_text_formats_define() {
       ),
     ),
   );
-
 }
 
 /*
@@ -118,147 +116,10 @@ function _curtapedia_profile_text_formats_define() {
  * 
  * @param array $text_formats
  */
-
 function _curtapedia_profile_text_formats_save(array &$text_formats) {
-
   foreach($text_formats as $text_format) {
     //$text_format = (object) $text_format;
     filter_format_save($text_format);
-  }
-
-}
-
-/*
- * Define the Drupal Site Administrator role.
- * 
- * In Drupal the the Administrator Role is a bit of a misnomer given the average
- * site admin should not be able to access some of Drupal's advanced settings.
- * This should be called before '_curtapedia_profile_user_roles_define()'.
- * 
- * @return array
- * 
- * @todo Move permission configuration into install task.
-*/
-function _curtapedia_profile_user_roles_admininstrator_role_define() {
-  $administrator_role['role'] = new stdClass();
-  $administrator_role['role']->name = 'Site Architect';
-  $administrator_role['role']->weight = 50;
-  $administrator_role['permissions'] = array_keys(module_invoke_all('permission'));
-  
-  return $administrator_role;
-}
-
-/*
- * Save Drupal Administrator Role into the datatbase
- * 
- * Saves the Drupal Administrator Role into the database, assigns complete set 
- * of permissions, and assignes User 1 to that role.
- * 
- * @param array $administrator_role
- * 
- * @todo Move permission configuration into install task.
- */
-function _curtapedia_profile_user_roles_admininstrator_role_save(array &$administrator_role) {
-  user_role_save($administrator_role['role']);
-  user_role_grant_permissions($administrator_role['role']->rid, $administrator_role['permissions']);
-
-  //Assign User 1 the Drupal Administrator Role.
-  db_insert('users_roles')
-    ->fields(array(
-      'uid' => 1,
-      'rid' => $administrator_role['role']->rid,
-      ))
-    ->execute();
-  
-  // Set the role in the Variables table
-  variable_set('user_admin_role', $administrator_role['role']->rid);
-}
-
-/* Define other Drupal user roles
- * 
- * Defines other Drupal 7 roles that parity WordPress roles. Roles must be 
- * defined after all the content types are created so that permssions may be 
- * properly assigned for them. This should be called last.
- * 
- * @return array
- * 
- * @todo Move permission configuration into install task.
-*/
-function _curtapedia_profile_user_roles_define() {
-  $user_roles = array();
-  $user_roles['site administrator']['role'] = new stdClass();
-  $user_roles['site administrator']['role']->name = 'Site Administrator';
-  $user_roles['site administrator']['role']->weight = 49;
-  $user_roles['site administrator']['permissions'] = array(
-    'administer blocks',
-    'access content',
-    //'access navbar',
-    'access content overview',
-    'administer nodes',
-    'view own unpublished content',
-    'view revisions',
-    'revert revisions',
-    'delete revisions',
-    'administer themes',
-    'access administration pages',
-    'access site in maintenance mode',
-    'access user profiles',
-  );
-  
-  $user_roles['editor']['role'] = new stdClass();
-  $user_roles['editor']['role']->name = 'Editor';
-  $user_roles['editor']['role']->weight = 48;
-  $user_roles['editor']['permissions'] = array(
-    'access content',
-    //'access navbar',
-    'access content overview',
-    'view own unpublished content',
-    'view revisions',
-    'revert revisions',
-    'create page content',
-    'edit any page content',
-    'access user profiles',
-  );
-
-  $user_roles['author']['role'] = new stdClass();
-  $user_roles['author']['role']->name = 'Author';
-  $user_roles['author']['role']->weight = 47;
-  $user_roles['author']['permissions'] = array(
-    'access content',
-    //'access navbar',
-    'access content overview',
-    'view own unpublished content',
-    'view revisions',
-    'create own page content',
-    'edit own page content',
-    'access user profiles',
-  );
-
-  $user_roles['contributor']['role'] = new stdClass();
-  $user_roles['contributor']['role']->name = 'Contributor';
-  $user_roles['contributor']['role']->weight = 46;
-  $user_roles['contributor']['permissions'] = array(
-    'access content',
-    'view own unpublished content',
-    'view revisions',
-    'create own page content',
-    'edit own page content',
-    'access user profiles',
-  );
-  return (array)$user_roles;
-}
-
-/*
- * Save Drupal user roles into the datatbase
- * 
- * Saves other Drupal user roles and permissions into the database.
- * 
- * @todo Move permission configuration into install task.
- */
-function _curtapedia_profile_user_roles_save(array &$user_roles) {
-  foreach($user_roles as $user_role) {
-    user_role_save($user_role['role']);
-    user_role_grant_permissions($user_role['role']->rid, $user_role['permissions']);
   }
 }
 
@@ -291,38 +152,35 @@ function _curtapedia_profile_menu_links_save(array &$menu_links) {
  * @return array
  * @todo Write a better long description
  */
-
 function _curtapedia_profile_node_types_define() {
   $node_types = array(
-      array(
-        'type' => 'page',
-        'name' => st('Basic page'),
-        'base' => 'node_content',
-        'description' => st("Use a <em>Basic page/em> for static content, content that rarely changes."),
-        'custom' => 1,
-        'modified' => 1,
-        'locked' => 0,
-      ),
-    );
+    // Create 'Basic page' node type
+    array(
+      'type' => 'page',
+      'name' => st('Basic page'),
+      'base' => 'node_content',
+      'description' => st('Use a <em>Basic page</em> for static content, content that rarely changes.'),
+      'custom' => 1,
+      'modified' => 1,
+      'locked' => 0,
+    ),
+  );
 
   /*
    * Default publishing options for "Basic page".
    * 
-   * Defaults:
+   * Defaults are:
    * <ul>
-   * <li>Publish
-   * <li>Do not promote
-   * <li>Do not make sticky
-   * <li>Create new revision
+   * <li>Publish; <li>Do not promote; <li>Do not make sticky; <li>Create new revision.
    * </ul>
    */
-  /*variable_set('node_options_page', array('status', 'revision'));
+  variable_set('node_options_page', array('status', 'revision'));
   
   // Disable comments on 'Basic page'
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
   // Don't display date and author information for "Basic page" nodes by default.
-  variable_set('node_submitted_page', FALSE);*/
+  variable_set('node_submitted_page', FALSE);
   
   // Return node types array
   return $node_types;
