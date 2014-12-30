@@ -51,14 +51,14 @@ function _curtapedia_profile_user_settings_install() {
     // Loop through roles and find default permissions.
     foreach($roles as $index => $role) {
       $weight = 10 - $index; // Fixes weighting problem with ordering by most powerful account.
-      $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight));
+      $operations[] = array('_curtapedia_profile_user_settings_role_save', array($role, $weight, &$context));
     }
   } else {
     drupal_set_message("Couldn't load includes/curtapedia_profile.permisssions.inc",  'error');
     exit();
   }
   
-  $operations[] = array('_curtapedia_profile_user_settings_flush_caches', array('Flushing website caches.'));
+  $operations[] = array('_curtapedia_profile_user_settings_flush_cache', array('Flushing website caches.'));
 
   $batch = array(
     'title' => t('Setting up default user roles and permissions'),
@@ -93,7 +93,7 @@ function _curtapedia_profile_install_additional_modules() {
     $operations[] = array('_curtapedia_profile_enable_module', array($module, $files[$module]->info['name']));
   }
   
-  $operations[] = array('_curtapedia_profile_flush_caches', array('Flushed caches.'));
+  $operations[] = array('_curtapedia_profile_flush_caches', array('Flushing website caches.'));
 
   $batch = array(
     'title' => t('Installing additional functionality'),

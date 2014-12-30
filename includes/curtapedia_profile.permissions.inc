@@ -1,7 +1,7 @@
 <?php
 
 define('SUPER_ADMIN_ROLE', 'Super administrator');
-define('SLEEP_TIMER', 0.75);
+define('SLEEP_TIMER', 2);
 
 /** 
  * Define Drupal user roles
@@ -24,7 +24,7 @@ function _curtapedia_profile_user_settings_roles_define() {
  * 
  * @return array
  */
-function _curtapedia_profile_user_settings_permissions_define($role_name) {
+function _curtapedia_profile_user_settings_permissions_define($role_name = NULL) {
   if(is_string($role_name)) {
     switch ($role_name) {
       case 'Contributor':
@@ -85,23 +85,23 @@ function _curtapedia_profile_user_settings_permissions_define($role_name) {
  * 
  * @return bool
  */
-function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 0, &$context) {
+function _curtapedia_profile_user_settings_role_save($role_name = NULL, $role_weight = NULL, &$context) {
   // Type checking parameters because PHP doesn't have type hinting.
   if(is_string($role_name) && is_int($role_weight)) {
     $role = new stdClass();
     $role->name = $role_name;
     $role->weight = $role_weight;
     user_role_save($role);
-    $context['message'] = st('Created the @role role.', array('@role' => $role_name));
+    $context['message'] = t('Created the @role role.', array('@role' => $role_name));
     sleep(SLEEP_TIMER);
     
     $role_permissions = _curtapedia_profile_user_settings_permissions_define($role_name);
     user_role_grant_permissions($role->rid, $role_permissions);
     foreach($role_permissions as $permission) {
-      $context['message'] = st('Granted @permission to @role role.', array('@permission' => $permission, '@role' => $role_name));
+      $context['message'] = t('Granted @permission to @role role.', array('@permission' => $permission, '@role' => $role_name));
       sleep(SLEEP_TIMER);
     }
-    //$context['message'] = st('Granted permissions for the @role role.', array('@role' => $role_name));
+    $context['message'] = t('Granted permissions for the @role role.', array('@role' => $role_name));
     sleep(SLEEP_TIMER);
   } else {
     if(!is_string($role_name)) {
@@ -112,7 +112,7 @@ function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 
         '@param_type_needed' => 'string',
         '@param_type_passed' => gettype($role_name),
       );
-      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+      drupal_set_message(t("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
     }
     if(!is_int($role_weight)) {
       $replacements = array(
@@ -122,12 +122,12 @@ function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 
         '@param_type_needed' => 'integer',
         '@param_type_passed' => gettype($role_weight),
       );
-      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+      drupal_set_message(t("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
     }
   }
 }
 
-function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$context) {
+function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_id = NULL, &$context) {
   if(is_int($user_id) & is_int($role_id)) {
     $query = db_insert('users_roles')
       ->fields(
@@ -143,7 +143,7 @@ function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$c
     $role_object = user_role_load($role_id);
     $role_name = $role_object->name;
     
-    $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_name, '@role' => $role_name));
+    $context['message'] = t('Assigned @user the @role role.', array('@user'=> $user_name, '@role' => $role_name));
     sleep(SLEEP_TIMER);
   } else {
     if(!is_int($user_id)) {
@@ -154,7 +154,7 @@ function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$c
         '@param_type_needed' => 'string',
         '@param_type_passed' => gettype($user_id),
       );
-      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+      drupal_set_message(t("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
     }
     if(!is_int($role_id)) {
       $replacements = array(
@@ -164,7 +164,7 @@ function _curtapedia_profile_user_settings_role_add_user($user_id, $role_id, &$c
         '@param_type_needed' => 'integer',
         '@param_type_passed' => gettype($role_id),
       );
-      drupal_set_message(st("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
+      drupal_set_message(t("@function parameter @param_name must be passed a @param_type_needed, it was passed: (@param_type_passed) @param_value", $replacements), 'error');
     }
   }
 }
@@ -195,7 +195,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   settype($role_id, "integer");
   
   // Notify Batch API of progess (this is for the end user).
-  $context['message'] = st('Created @role role.', array('@role' => SUPER_ADMIN_ROLE));
+  $context['message'] = t('Created @role role.', array('@role' => SUPER_ADMIN_ROLE));
   sleep(SLEEP_TIMER);;
 
   // Set the 'Super administrator' as the admin role in the {variables} table
@@ -206,7 +206,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   user_role_grant_permissions($role_id, $role_permissions);
   
   // Notify Batch API of progress (this is for the end user).
-  $context['message'] = st('Granted all permissions to @role role.', array('@role' => SUPER_ADMIN_ROLE));
+  $context['message'] = t('Granted all permissions to @role role.', array('@role' => SUPER_ADMIN_ROLE));
   sleep(SLEEP_TIMER);;
 
   // Add Drupal super user (UID: 1) to 'Super administrator' role.
@@ -218,7 +218,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
  * 
  * This function only exists so that it may report back to the Batch API.
  */
-function _curtapedia_profile_flush_caches($operation, &$context) {
-  $context['message'] = st('@operation', array('@operation' => $operation));
+function _curtapedia_profile_user_settings_flush_cache($operation, &$context) {
+  $context['message'] = t('@operation', array('@operation' => $operation));
   drupal_flush_all_caches();
 }
