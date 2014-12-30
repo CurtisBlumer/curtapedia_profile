@@ -1,6 +1,7 @@
 <?php
 
 define('SUPER_ADMIN_ROLE', 'Super administrator');
+define('SLEEP_TIMER', 1);
 
 /** 
  * Define Drupal user roles
@@ -92,12 +93,12 @@ function _curtapedia_profile_user_settings_role_save($role_name, $role_weight = 
     $role->weight = $role_weight;
     user_role_save($role);
     $context['message'] = st('Created the @role role.', array('@role' => $role_name));
-    sleep(0.5);
+    sleep(SLEEP_TIMER);
     
     $role_permissions = _curtapedia_profile_user_settings_permissions_define($role_name);
     user_role_grant_permissions($role->rid, $role_permissions);
     $context['message'] = st('Granted permissions for the @role role.', array('@role' => $role_name));
-    sleep(0.5);
+    sleep(SLEEP_TIMER);;
   } else {
     if(!is_string($role_name)) {
       $replacements = array(
@@ -135,7 +136,7 @@ function _curtapedia_profile_user_settings_role_add_user($user_id = NULL, $role_
       $user_object = user_load($user_id);
       $role_object = user_role_load($role_id);
       $context['message'] = st('Assigned @user the @role role.', array('@user'=> $user_object->name, '@role' => $role_object->name));
-      sleep(0.5);
+      sleep(SLEEP_TIMER);;
     }
   } else {
     if(!is_int($user_id)) {
@@ -188,7 +189,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   
   // Notify Batch API of progess (this is for the end user).
   $context['message'] = st('Created @role role.', array('@role' => SUPER_ADMIN_ROLE));
-  sleep(0.5);
+  sleep(SLEEP_TIMER);;
 
   // Set the 'Super administrator' as the admin role in the {variables} table
   variable_set('user_admin_role', $role_id);
@@ -199,7 +200,7 @@ function _curtapedia_profile_user_settings_role_admin_create(&$context) {
   
   // Notify Batch API of progress (this is for the end user).
   $context['message'] = st('Granted all permissions to @role role.', array('@role' => SUPER_ADMIN_ROLE));
-  sleep(0.5);
+  sleep(SLEEP_TIMER);;
 
   // Add Drupal super user (UID: 1) to 'Super administrator' role.
   _curtapedia_profile_user_settings_role_add_user(1, $role_id);
