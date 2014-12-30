@@ -2,7 +2,13 @@
 /**
  * @file
  * Enables modules and site configuration for a standard site installation.
+ * 
+ * @author cblumer88
+ * @copyright (c) 2014, Curtis Blumer
+ * @version 7.x-1.x-dev
  */
+
+namespace Drupal\curtapedia_profile;
 
 /**
  * Implements hook_form_FORM_ID_alter() for install_configure_form().
