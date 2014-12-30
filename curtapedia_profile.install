@@ -1,10 +1,15 @@
 <?php
-
 /**
  * @file
  * Install, update, and uninstall functions for the Curtapedia 
  * installation profile.
+ * 
+ * @author cblumer88
+ * @copyright (c) 2014, Curtis Blumer
+ * @version 7.x-1.x-dev
  */
+
+namespace Drupal\curtapedia_profile;
 
 /**
  * Implements hook_install().
@@ -13,7 +18,6 @@
  *
  * @see system_install()
  */
-
 function curtapedia_profile_install() {
 
   // Any themes without keys here will get numeric keys and so will be enabled,
@@ -119,6 +123,15 @@ function _curtapedia_profile_text_formats_define() {
   );
 
 }
+
+/*
+ * Saves default text formats to database
+ * 
+ * Saves default text formats defined in _curtapedia_profile_text_formats_define
+ * to the database.
+ * 
+ * @param array $text_formats
+ */
 
 function _curtapedia_profile_text_formats_save(array &$text_formats) {
 
@@ -282,18 +295,28 @@ function _curtapedia_profile_menu_links_save(array &$menu_links) {
   menu_rebuild();
 }
 
+/*
+ * Define default node types
+ * 
+ * Insert default pre-defined node types into the database. For a complete list
+ * of available node type attributes, refer to the node type API documentation
+ * at: http://api.drupal.org/api/HEAD/function/hook_node_info.
+ * 
+ * @return array
+ * @todo Write a better long description
+ */
+
 function _curtapedia_profile_node_types_define() {
-  // Insert default pre-defined node types into the database. For a complete
-  // list of available node type attributes, refer to the node type API
-  // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
   $node_types = array(
-      'type' => 'page',
-      'name' => st('Basic page'),
-      'base' => 'node_content',
-      'description' => st("Use a <em>Basic page/em> for static content, content that rarely changes."),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
+      array(
+        'type' => 'page',
+        'name' => st('Basic page'),
+        'base' => 'node_content',
+        'description' => st("Use a <em>Basic page/em> for static content, content that rarely changes."),
+        'custom' => 1,
+        'modified' => 1,
+        'locked' => 0,
+      ),
     );
 
   /*
@@ -307,13 +330,13 @@ function _curtapedia_profile_node_types_define() {
    * <li>Create new revision
    * </ul>
    */
-  variable_set('node_options_page', array('status', 'revision'));
+  /*variable_set('node_options_page', array('status', 'revision'));
   
   // Disable comments on 'Basic page'
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
   // Don't display date and author information for "Basic page" nodes by default.
-  variable_set('node_submitted_page', FALSE);
+  variable_set('node_submitted_page', FALSE);*/
   
   // Return node types array
   return $node_types;
